@@ -1,5 +1,5 @@
 import { Add, Edit, DeleteOutline, Check, Clear, ArrowDownward, Search, FirstPage, LastPage, ChevronRight, ChevronLeft, ArrowUpward } from "@material-ui/icons";
-import MaterialTable, { Action } from "material-table";
+import MaterialTable from "material-table";
 import React from "react";
 
 interface TableProps{
@@ -34,10 +34,6 @@ export const Table: React.FC<TableProps> = (props: TableProps) => {
         columns={props.columns}
         data={props.data}
         icons={tableIcons}
-        editable={{
-          onRowAdd: async (newData) => {}
-        }}
-        actions={props.actions}
         options={{
           actionsColumnIndex: -1,
           headerStyle: {
@@ -45,9 +41,9 @@ export const Table: React.FC<TableProps> = (props: TableProps) => {
             color: '#FFF',
           },
           rowStyle: {
-            backgroundColor: '#EEE'
+            backgroundColor: '#EEE',
           },
-          showFirstLastPageButtons: false
+          showFirstLastPageButtons: false,
         }}
         localization={{
           body: {

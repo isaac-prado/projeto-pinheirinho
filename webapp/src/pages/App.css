@@ -1,3 +1,4 @@
+/* Estilos do header */
 .header {
   align-items: center;
   display: flex;
@@ -21,6 +22,7 @@
   height: auto;
   margin: 0 auto;
 }
+
 /* Estilos gerais da aplicação */
 .App {
   text-align: center;
@@ -53,11 +55,22 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Estilos para os ícones de ações */
+.action-icons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-icon {
+  cursor: pointer;
+  color: #0d3530;
+}
+
+/* Estilos do footer */
+.footer {
+  background-color: #0d3530;
+  color: white;
+  text-align: center;
+  padding: 50px 0;
+  margin-top: 70px;
 }
