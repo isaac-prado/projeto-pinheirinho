@@ -1,15 +1,14 @@
+import { Service, Inject } from "typedi";
 import Cliente from "../../../dominio/entidades/cliente";
-import IClienteRepository from "../../contratos/iClienteRepository";
-import IConsultarCliente from "../interfaces/iConsultarCliente";
+import { IClienteRepository } from "../../contratos/iClienteRepository";
+import { IConsultarCliente } from "../interfaces/iConsultarCliente";
+@Service()
+export class ConsultarCliente implements IConsultarCliente {
+  public constructor(
+    @Inject() private readonly clienteRepository: IClienteRepository
+  ) {}
 
-export default class ConsultarCliente implements IConsultarCliente {
-    private clienteRepository: IClienteRepository;
-
-    public constructor(clienteRepository: IClienteRepository) {
-        this.clienteRepository = clienteRepository;
-    }
-
-    async executar(cpf: string | null, nome: string | null): Promise<Cliente> {
-        return await this.clienteRepository.consultarCliente(cpf, nome);
-    }
+  async executar(cpf: string | null, nome: string | null): Promise<Cliente> {
+    return await this.clienteRepository.consultarCliente(cpf, nome);
+  }
 }

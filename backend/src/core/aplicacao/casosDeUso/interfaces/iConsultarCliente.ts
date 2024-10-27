@@ -1,5 +1,5 @@
 import Cliente from "../../../dominio/entidades/cliente";
 
-export default interface IConsultarCliente {
+export interface IConsultarCliente {
     executar(cpf: string | null, nome: string | null): Promise<Cliente>;
 }
