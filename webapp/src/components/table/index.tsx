@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import MaterialTable from 'material-table';
 import { Switch } from '@material-ui/core';
 import { Add, Edit, DeleteOutline, Check, Clear, AttachMoney, ShoppingCart, Search, FirstPage, LastPage, ChevronRight, ChevronLeft, ArrowUpward } from "@material-ui/icons";
-import ActionModal from '../actionModal'
+import ActionModal from '../modal'
 import './index.css';
 
 
@@ -134,7 +134,7 @@ const Table: React.FC<TableProps> = ({ title, columns, data }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={modalConfig.title}
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit} 
       />
     </div>
   );
