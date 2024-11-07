@@ -8,7 +8,7 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   onSubmit: (data: any) => void;
-  variant?: 'default' | 'register';
+  variant?: 'default' | 'register' | 'remove';
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant = 'default' }) => {
@@ -25,10 +25,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
       setName('');
       setAddress('');
       setPhone('');
+    } else if (variant === 'remove') {
+      onSubmit({ cpf });
+      setCpf('');
     } else {
       onSubmit(value);
       setValue(0);
     }
+    onClose(); // Fecha o modal após o envio
   };
 
   return (
@@ -66,6 +70,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
               onChange={(e) => setPhone(e.target.value)}
             />
           </>
+        ) : variant === 'remove' ? (
+          <TextField
+            label="CPF"
+            fullWidth
+            margin="normal"
+            value={cpf}
+            onChange={(e) => setCpf(e.target.value)}
+          />
         ) : (
           <OutlinedInput
             startAdornment={<InputAdornment position="start">$</InputAdornment>}

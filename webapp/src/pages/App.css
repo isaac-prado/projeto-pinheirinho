@@ -5,7 +5,7 @@
   flex-direction: column;
   padding-top: 30px;
   gap: 15px;
-  margin-bottom: 40px;
+  margin-bottom: 25px;
 }
 
 .date-container {
@@ -16,43 +16,26 @@
   font-weight: bold;
   color: #0d3530;
 }
-
 .logo {
   width: 160px;
   height: auto;
   margin: 0 auto;
 }
-
-/* Estilos gerais da aplicação */
-.App {
-  text-align: center;
-  background-color: #edf0e5;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.modal-button {
+  background-color: #0d3530;
   color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
-.App-link {
-  color: #61dafb;
+.box-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 25px;
 }
 
 /* Estilos para os ícones de ações */
@@ -64,16 +47,6 @@
 .action-icon {
   cursor: pointer;
   color: #0d3530;
-}
-
-.add-user-button {
-  background-color: #0d3530;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
 }
 
 /* Estilos do footer */
