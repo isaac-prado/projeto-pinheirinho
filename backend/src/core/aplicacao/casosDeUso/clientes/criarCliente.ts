@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { Inject, Service } from "typedi";
 import Endereco from "../../../dominio/objetosDeValor/endereco";
 import { IClienteRepository } from "../../contratos/iClienteRepository";
-import { ICriarCliente } from "../interfaces/iCriarCliente";
+import { ICriarCliente } from "./interfaces/iCriarCliente";
 
 @Service()
 export class CriarCliente implements ICriarCliente {

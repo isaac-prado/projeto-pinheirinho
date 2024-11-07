@@ -1,7 +1,7 @@
 import { Service, Inject } from "typedi";
 import Cliente from "../../../dominio/entidades/cliente";
 import { IClienteRepository } from "../../contratos/iClienteRepository";
-import { IConsultarCliente } from "../interfaces/iConsultarCliente";
+import { IConsultarCliente } from "./interfaces/iConsultarCliente";
 @Service()
 export class ConsultarCliente implements IConsultarCliente {
   public constructor(

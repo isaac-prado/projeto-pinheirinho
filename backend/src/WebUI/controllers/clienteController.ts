@@ -1,10 +1,10 @@
 import express from "express";
-import { ICriarCliente } from "../../core/aplicacao/casosDeUso/interfaces/iCriarCliente";
-import { IConsultarCliente } from "../../core/aplicacao/casosDeUso/interfaces/iConsultarCliente";
+import { ICriarCliente } from "../../core/aplicacao/casosDeUso/clientes/interfaces/iCriarCliente";
+import { IConsultarCliente } from "../../core/aplicacao/casosDeUso/clientes/interfaces/iConsultarCliente";
 import { Service, Inject } from "typedi";
-import { IRemoverCliente } from "../../core/aplicacao/casosDeUso/interfaces/iRemoverCliente";
-import { IAlterarCliente } from "../../core/aplicacao/casosDeUso/interfaces/iAlterarCliente";
-import { IAdicionarSaldoCliente } from "../../core/aplicacao/casosDeUso/interfaces/iAdicionarSaldoCliente";
+import { IRemoverCliente } from "../../core/aplicacao/casosDeUso/clientes/interfaces/iRemoverCliente";
+import { IAlterarCliente } from "../../core/aplicacao/casosDeUso/clientes/interfaces/iAlterarCliente";
+import { IAdicionarSaldoCliente } from "../../core/aplicacao/casosDeUso/clientes/interfaces/iAdicionarSaldoCliente";
 
 @Service()
 export class ClienteController {
@@ -57,7 +57,7 @@ export class ClienteController {
     var { cpf } = req.body;
     await this.removerCliente.executar(cpf);
     res.send("Cliente removido com sucesso");
-  }
+  };
 
   public rotaAlterarCliente = async (
     req: express.Request,
@@ -66,5 +66,5 @@ export class ClienteController {
     var { cpf, telefone, endereco } = req.body;
     await this.alterarCliente.executar(cpf, telefone, endereco);
     res.send("Cliente alterado com sucesso");
-  }
+  };
 }

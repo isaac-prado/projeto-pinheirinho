@@ -14,5 +14,17 @@ clienteRouters.get(
   rotaBaseCliente,
   clienteController.rotaConsultarCliente.bind(clienteController)
 );
+clienteRouters.delete(
+  rotaBaseCliente,
+  clienteController.rotaRemoverCliente.bind(clienteController)
+);
+clienteRouters.put(
+  rotaBaseCliente,
+  clienteController.rotaAlterarCliente.bind(clienteController)
+);
+clienteRouters.post(
+  `${rotaBaseCliente}/adicionarSaldo`,
+  clienteController.rotaAdicionarSaldo.bind(clienteController)
+);
 
 export default clienteRouters;
