@@ -4,6 +4,7 @@ import { IConsultarCliente } from "../../core/aplicacao/casosDeUso/interfaces/iC
 import { Service, Inject } from "typedi";
 import { IRemoverCliente } from "../../core/aplicacao/casosDeUso/interfaces/iRemoverCliente";
 import { IAlterarCliente } from "../../core/aplicacao/casosDeUso/interfaces/iAlterarCliente";
+import { IAdicionarSaldoCliente } from "../../core/aplicacao/casosDeUso/interfaces/iAdicionarSaldoCliente";
 
 @Service()
 export class ClienteController {
@@ -11,8 +12,18 @@ export class ClienteController {
     @Inject() private readonly criarCliente: ICriarCliente,
     @Inject() private readonly consultarCliente: IConsultarCliente,
     @Inject() private readonly removerCliente: IRemoverCliente,
-    @Inject() private readonly alterarCliente: IAlterarCliente
+    @Inject() private readonly alterarCliente: IAlterarCliente,
+    @Inject() private readonly adicionarSaldo: IAdicionarSaldoCliente
   ) {}
+
+  public rotaAdicionarSaldo = async (
+    req: express.Request,
+    res: express.Response
+  ) => {
+    var { cpf, valor } = req.body;
+    await this.adicionarSaldo.executar(cpf, valor);
+    res.send("Saldo adicionado com sucesso");
+  };
 
   public rotaCriarCliente = async (
     req: express.Request,
