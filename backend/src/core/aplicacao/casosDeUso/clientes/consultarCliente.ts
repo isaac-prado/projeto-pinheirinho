@@ -8,7 +8,7 @@ export class ConsultarCliente implements IConsultarCliente {
     @Inject() private readonly clienteRepository: IClienteRepository
   ) {}
 
-  async executar(cpf: string | null, nome: string | null): Promise<Cliente> {
+  async executar(cpf?: string, nome?: string): Promise<Cliente> {
     return await this.clienteRepository.consultarCliente(cpf, nome);
   }
 }

@@ -5,7 +5,13 @@ import Endereco from "../../../core/dominio/objetosDeValor/endereco";
 
 @Service()
 export class ClienteRepository implements IClienteRepository {
-  async consultarCliente(cpf: string | null, nome: string | null): Promise<Cliente> {
+  alterarCliente(cliente: Cliente): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  removerCliente(cpf: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  async consultarCliente(cpf?: string, nome?: string): Promise<Cliente> {
     console.log("Consultando cliente...");
 
     return new Cliente("Adriano", "123.456.789-00", new Endereco(), "123456789", 1000, []);

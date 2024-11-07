@@ -36,4 +36,18 @@ export default class Cliente {
         this.pedidos = pedidos;
         this.email = email;
     }
+
+    public adicionarSaldo(valorAdicionado: number): void {
+        if (valorAdicionado > 0)
+            this.saldo += valorAdicionado;
+    }
+
+    public descontarSaldo(valorDoPedido: number): void {
+        if (valorDoPedido > 0)
+            this.saldo -= valorDoPedido;
+    }
+
+    public podeSerRemovido(): boolean {
+        return this.saldo === 0;
+    }
 }
