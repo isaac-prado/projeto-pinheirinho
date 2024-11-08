@@ -80,7 +80,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
           />
         ) : (
           <OutlinedInput
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            startAdornment={<InputAdornment position="start">R$</InputAdornment>}
             fullWidth
             value={value}
             onChange={(e) => setValue(Number(e.target.value))}

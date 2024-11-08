@@ -16,9 +16,10 @@ interface TableProps {
   title: string;
   columns: any[];
   data: RowData[];
+  detailPanel?: any | null;
 }
 
-const Table: React.FC<TableProps> = ({ title, columns, data }) => {
+const Table: React.FC<TableProps> = ({ title, columns, data, detailPanel }) => {
   const tableIcons: any = {
     Add:React.forwardRef((_) =><Add/>),
     Check:React.forwardRef((_) =><Check/>),
@@ -93,6 +94,7 @@ const Table: React.FC<TableProps> = ({ title, columns, data }) => {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <MaterialTable
+        detailPanel={detailPanel}
         title={title}
         columns={tableColumns}
         data={tableData}

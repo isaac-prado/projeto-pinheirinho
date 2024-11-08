@@ -3,6 +3,9 @@ import Table from '../components/table';
 import { customerMock } from '../services/customerService';
 import './App.css';
 import Modal from '../components/modal';
+import CurrencyFormatter from '../utils/currencyFormatter';
+import Customer from '../domain/customer';
+import { ArrowRightSharp } from '@material-ui/icons';
 
 const formatDate = (date: Date) => {
   return new Intl.DateTimeFormat('pt-BR', {
@@ -26,11 +29,12 @@ const App: React.FC = () => {
 
   const columns = [
     { title: 'Nome', field: 'name' },
-    { title: 'Crédito', field: 'credit' },
+    { title: 'Crédito', field: 'credit', 
+      render: (rowData: Customer) => CurrencyFormatter.formatToBRL(rowData.credit) },
   ];
 
-  const handleAddUser = (data: { cpf: string; name: string; address: string; phone: string }) => {
-    customerMock.push({ cpf: data.cpf, name: data.name, credit: 0, isActive: true });
+  const handleAddUser = (data: Customer) => {
+    customerMock.push(data);
     setUserModalOpen(false);
   };
 
@@ -41,6 +45,39 @@ const App: React.FC = () => {
     }
     setRemoveModalOpen(false);
   };
+
+  const customerDetail: any = [
+    {
+      icon: React.forwardRef((_) => <ArrowRightSharp/>),
+      tooltip: 'Ver detalhes',
+      render: (rowData: Customer) => {
+        return (
+          <div
+            style={{
+              backgroundColor: '#f9f9f6',
+            }}
+          >
+            <table id="customerDetail">
+              <thead>
+                <tr>
+                  <th>Telefone</th>
+                  <th>Email</th>
+                  <th>CPF</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{rowData.phone}</td>
+                  <td>{rowData.email ?? '-'}</td>
+                  <td>{rowData.cpf}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )
+      },
+    },
+  ]
 
   return (
     <>
@@ -56,7 +93,8 @@ const App: React.FC = () => {
           Remover Cliente
         </button>
       </div>
-      <Table title="Gestão de assinaturas" columns={columns} data={customerMock} />
+      <Table title="Gestão de assinaturas" columns={columns} data={customerMock}
+        detailPanel={customerDetail} />
       <footer className="footer">&copy; 2024 Pinheirinho Restaurant</footer>
 
       {/* Modal para Adicionar Cliente */}
