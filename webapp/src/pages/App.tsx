@@ -5,46 +5,43 @@ import './App.css';
 import Modal from '../components/modal';
 import CurrencyFormatter from '../utils/currencyFormatter';
 import Customer from '../domain/customer';
-import { ArrowRightSharp } from '@material-ui/icons';
-
-const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat('pt-BR', {
-    dateStyle: 'full',
-    timeStyle: 'medium',
-  }).format(date);
-};
+import { ArrowRightSharp, AttachMoney, ShoppingCart } from '@material-ui/icons';
+import { Switch } from '@material-ui/core';
+import { formatDateToFull } from '../utils/dateFormatter';
 
 const App: React.FC = () => {
+
   const [currentTime, setCurrentTime] = useState(new Date());
   const [userModalOpen, setUserModalOpen] = useState(false);
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalConfig, setModalConfig] = useState({ title: '', action: '' });
+  const [selectedRow, setSelectedRow] = useState<Customer | null>(null);
+  const [tableData, setTableData] = useState<Customer[]>(customerMock);
 
   const columns = [
     { title: 'Nome', field: 'name' },
     { title: 'Crédito', field: 'credit', 
       render: (rowData: Customer) => CurrencyFormatter.formatToBRL(rowData.credit) },
+    {
+      title: 'Ativo',
+      field: 'isActive',
+      render: (rowData: Customer) => (
+        <Switch checked={rowData.isActive} color="primary" disabled />
+      ),
+    },
+    {
+      title: 'Ações',
+      field: 'actions',
+      render: (rowData: Customer) => (
+        <div className="action-icons">
+          <AttachMoney className="action-icon" onClick={() => handleOpenModal(rowData, 'updateCredit')} />
+          <ShoppingCart className="action-icon" onClick={() => handleOpenModal(rowData, 'addOrder')} />
+        </div>
+      ),
+    },
   ];
-
-  const handleAddUser = (data: Customer) => {
-    customerMock.push(data);
-    setUserModalOpen(false);
-  };
-
-  const handleRemoveUser = (data: { cpf: string }) => {
-    const index = customerMock.findIndex((customer) => customer.cpf === data.cpf);
-    if (index !== -1) {
-      customerMock.splice(index, 1);
-    }
-    setRemoveModalOpen(false);
-  };
 
   const customerDetail: any = [
     {
@@ -79,11 +76,56 @@ const App: React.FC = () => {
     },
   ]
 
+  const handleOpenModal = (rowData: Customer, action: string) => {
+    setSelectedRow(rowData);
+    setModalConfig({
+      title: action === 'updateCredit' ? 'Adicionar crédito' : 'Adicionar pedido',
+      action,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = (value: number) => {
+    if (selectedRow) {
+      const updatedData = tableData.map((row) => {
+        if (row.name === selectedRow.name) { //debit? 
+          return modalConfig.action === 'updateCredit'
+            ? { ...row, credit: row.credit + value }
+            : { ...row, credit: row.credit - value };
+        }
+        return row;
+      });
+      setTableData(updatedData);
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleAddUser = (data: Customer) => {
+    customerMock.push(data);
+    setUserModalOpen(false);
+  };
+
+  const handleRemoveUser = (data: { cpf: string }) => {
+    const index = customerMock.findIndex((customer) => customer.cpf === data.cpf);
+    if (index !== -1) {
+      customerMock.splice(index, 1);
+    }
+    setRemoveModalOpen(false);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
       <div className="header">
         <img src="/logo-small.jpg" alt="Pinheirinho Restaurant" className="logo" />
-        <div className="date-container">{formatDate(currentTime)}</div>
+        <div className="date-container">{formatDateToFull(currentTime)}</div>
       </div>
       <div className="box-buttons">
         <button className="modal-button" onClick={() => setUserModalOpen(true)}>
@@ -93,8 +135,8 @@ const App: React.FC = () => {
           Remover Cliente
         </button>
       </div>
-      <Table title="Gestão de assinaturas" columns={columns} data={customerMock}
-        detailPanel={customerDetail} />
+      <Table title="Gestão de assinaturas" columns={columns} data={tableData}
+        detailPanel={customerDetail}/>
       <footer className="footer">&copy; 2024 Pinheirinho Restaurant</footer>
 
       {/* Modal para Adicionar Cliente */}
@@ -113,6 +155,14 @@ const App: React.FC = () => {
         title="Remover Cliente"
         onSubmit={handleRemoveUser}
         variant="remove"
+      />
+
+      {/* Modal para ações da tabela */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={modalConfig.title}
+        onSubmit={handleSubmit} 
       />
     </>
   );

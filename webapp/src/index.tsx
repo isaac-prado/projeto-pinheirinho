@@ -2,10 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './pages/App';
 import './index.css'
+import OrderPage from './pages/Order/OrderPage';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <OrderPage />
   </React.StrictMode>,
   document.getElementById('root')
 );
