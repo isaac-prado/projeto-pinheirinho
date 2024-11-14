@@ -44,6 +44,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
             <TextField
               label="CPF"
               fullWidth
+              name='cpf'
               margin="normal"
               value={cpf}
               onChange={(e) => setCpf(e.target.value)}
@@ -51,6 +52,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
             <TextField
               label="Nome"
               fullWidth
+              name='nome'
               margin="normal"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -58,6 +60,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
             <TextField
               label="Endereço"
               fullWidth
+              name='endereco'
               margin="normal"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
@@ -65,6 +68,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
             <TextField
               label="Telefone"
               fullWidth
+              name='telefone'
               margin="normal"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
@@ -74,6 +78,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
           <TextField
             label="CPF"
             fullWidth
+            name='cpf'
             margin="normal"
             value={cpf}
             onChange={(e) => setCpf(e.target.value)}
@@ -82,6 +87,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
           <OutlinedInput
             startAdornment={<InputAdornment position="start">R$</InputAdornment>}
             fullWidth
+            name='valor'
             value={value}
             onChange={(e) => setValue(Number(e.target.value))}
           />
