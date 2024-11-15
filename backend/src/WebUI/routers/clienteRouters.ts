@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import Container, { Token } from "typedi";
+import Container from "typedi";
 import { ClienteController } from "../controllers/clienteController";
 const rotaBaseCliente: string = "/cliente";
 
