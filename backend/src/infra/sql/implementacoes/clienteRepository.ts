@@ -22,7 +22,8 @@ export class ClienteRepository implements IClienteRepository {
     cpf: string,
     telefone: string,
     saldo: number,
-    email: string
+    email: string,
+    endereco: Endereco,
   ): Promise<void> {
     console.log("Criando cliente...");
   }

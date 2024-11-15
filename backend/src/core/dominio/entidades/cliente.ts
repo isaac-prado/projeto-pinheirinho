@@ -1,16 +1,16 @@
 import Endereco from "../objetosDeValor/endereco";
 import Pedido from "./pedido";
-import { IsString, IsNotEmpty, IsEmail, Length, IsArray, IsNumber, IsPositive, Matches, ValidateNested } from "class-validator"
+import { IsString, IsNotEmpty, IsEmail, Length, IsArray, IsNumber, IsPositive, Matches, ValidateNested, IsObject } from "class-validator"
 export default class Cliente {
     @IsString()
     @IsNotEmpty()
     nome: string;
 
     @IsString()
-    @Matches(/^\d{11}$/)
+    // falta validação de CPF
     cpf: string;
 
-    @IsNotEmpty()
+    @IsObject()
     endereco: Endereco;
 
     @Length(11)

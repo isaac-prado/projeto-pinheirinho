@@ -25,6 +25,7 @@ export class CriarCliente implements ICriarCliente {
     await this.clienteRepository.criarCliente(
       nome,
       cpf,
+      endereco,
       telefone,
       saldo,
       email
