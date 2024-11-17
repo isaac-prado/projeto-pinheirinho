@@ -1,10 +1,11 @@
 import express, { Router } from "express";
 import Container, { Token } from "typedi";
 import { ClienteController } from "../controllers/clienteController";
+import { clienteControllerBuilder } from "../builders/clienteControllerBuilder";
 const rotaBaseCliente: string = "/cliente";
 
 const clienteRouters: Router = express.Router();
-const clienteController = Container.get(ClienteController);
+const clienteController = clienteControllerBuilder();
 
 clienteRouters.post(
   rotaBaseCliente,
