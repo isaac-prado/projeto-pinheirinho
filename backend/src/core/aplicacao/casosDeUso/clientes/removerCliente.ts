@@ -3,15 +3,17 @@ import { IClienteRepository } from "../../contratos/iClienteRepository";
 import { IRemoverCliente } from "./interfaces/iRemoverCliente";
 
 export class RemoverCliente implements IRemoverCliente {
-  public constructor(private readonly clienteRepository: IClienteRepository) {}
+    public constructor(
+        private readonly clienteRepository: IClienteRepository
+    ) {}
 
-  async executar(cpf: string): Promise<void> {
-    var cliente = await this.clienteRepository.consultarCliente(cpf);
+    async executar(cpf: string): Promise<void> {
+        var cliente = await this.clienteRepository.consultarCliente(cpf);
 
-    if (cliente.podeSerRemovido()) {
-      throw new Error("Cliente não pode ser removido pois possui saldo");
+        if (cliente.podeSerRemovido()) {
+            throw new Error("Cliente não pode ser removido pois possui saldo");
+        }
+
+        await this.clienteRepository.removerCliente(cpf);
     }
-
-    await this.clienteRepository.removerCliente(cpf);
-  }
 }

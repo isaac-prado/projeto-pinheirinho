@@ -1,3 +1,3 @@
 export interface IRemoverPedido {
-    executar(cpf: string, pedidoId: number): Promise<void>;
+    executar(pedidoId: number): Promise<void>;
 }
