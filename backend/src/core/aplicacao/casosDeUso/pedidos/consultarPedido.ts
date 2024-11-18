@@ -18,7 +18,7 @@ export class ConsultarPedido implements IConsultarPedido {
         const pedidosConsulta: PedidoConsulta[] = pedidos.map((pedido: Pedido) => ({
             cliente: pedido.cliente.nome,
             data: pedido.data,
-            produtos: pedido.produto.map(produto => produto.nome),
+            produtos: pedido.produtos.map(produto => produto.nome),
             valor: pedido.valor,
         }));
         return pedidosConsulta;

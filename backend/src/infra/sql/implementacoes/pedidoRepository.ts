@@ -20,7 +20,7 @@ export class PedidoRepository implements IPedidoRepository {
         });
     }
 
-    async consultarPedidoPorId(pedidoId: string): Promise<Pedido | null> {
+    async consultarPedidoPorId(pedidoId: number): Promise<Pedido | null> {
         return this.ormRepository.findOne({
             where: { id: pedidoId },
             relations: ["cliente", "produtos"],

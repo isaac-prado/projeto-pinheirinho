@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable } from "typeorm";
-import ClienteORM from "./clienteORM";
+import ClienteORM from "./ClienteORM";
 import ProdutoORM from "./ProdutoORM";
 
 @Entity("pedido")

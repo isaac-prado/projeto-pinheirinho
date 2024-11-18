@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import { Inject, Service } from "typedi";
 import Endereco from "../../../dominio/objetosDeValor/endereco";
 import { IClienteRepository } from "../../contratos/iClienteRepository";
 import { ICriarCliente } from "./interfaces/iCriarCliente";
@@ -22,10 +21,10 @@ export class CriarCliente implements ICriarCliente {
     await this.clienteRepository.criarCliente(
       nome,
       cpf,
-      endereco,
       telefone,
       saldo,
-      email
+      email,
+      endereco
     );
   }
 }

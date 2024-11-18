@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
-import ClienteORM from "./entidades/clienteORM";
-import PedidoORM from "./entidades/pedidoORM";
+import ClienteORM from "./entidades/ClienteORM";
+import PedidoORM from "./entidades/PedidoORM";
 import ProdutoORM from "./entidades/ProdutoORM";
 
 const AppDataSource = new DataSource({
