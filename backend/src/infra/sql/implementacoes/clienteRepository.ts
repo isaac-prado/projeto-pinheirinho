@@ -15,7 +15,15 @@ export class ClienteRepository implements IClienteRepository {
     return new Cliente(
       "Adriano",
       "123.456.789-00",
-      new Endereco(),
+      new Endereco(
+        "Rua nova",
+        123,
+        "apto 12",
+        "Bairro novo",
+        "Cidade nova",
+        "SP",
+        "12345678"
+      ),
       "123456789",
       1000,
       []
