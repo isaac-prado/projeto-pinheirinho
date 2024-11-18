@@ -39,7 +39,7 @@ const App: React.FC = () => {
       field: 'actions',
       render: (rowData: Customer) => (
         <div className="action-icons">
-          <AttachMoney className="action-icon" onClick={() => handleOpenModal(rowData, 'updateCredit')} />
+          <AttachMoney className="action-icon" name = "icon dinheiro"  onClick={() => handleOpenModal(rowData, 'updateCredit')} />
           <ShoppingCart className="action-icon" onClick={() => handleOpenModal(rowData, 'addOrder')} />
         </div>
       ),
