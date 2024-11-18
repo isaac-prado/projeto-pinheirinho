@@ -61,8 +61,8 @@ export class ClienteController {
     req: express.Request,
     res: express.Response
   ) => {
-    var { cpf, telefone, email, endereco } = req.body;
-    await this.alterarCliente.executar(cpf, telefone, email, endereco);
+    var { cpf, telefone, email, endereco, pedido } = req.body;
+    await this.alterarCliente.executar(cpf, telefone, email, endereco, pedido);
     res.send("Cliente alterado com sucesso");
   };
 }

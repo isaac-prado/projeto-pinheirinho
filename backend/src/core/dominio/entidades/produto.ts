@@ -1,7 +1,11 @@
 import { IsNumber, IsPositive, IsString, IsArray, ValidateNested } from "class-validator";
 import Pedido from "./pedido";
+import { PrimaryGeneratedColumn } from "typeorm";
 
 export default class Produto {
+    @PrimaryGeneratedColumn()
+    id: string;
+
     @IsString()
     nome: string;
 

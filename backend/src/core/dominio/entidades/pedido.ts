@@ -1,8 +1,12 @@
 import { IsArray, IsDate, IsNumber, ValidateNested } from "class-validator";
 import Cliente from "./cliente";
 import Produto from "./produto";
+import { PrimaryGeneratedColumn } from "typeorm";
 
 export default class Pedido {
+    @PrimaryGeneratedColumn()
+    id: string;
+
     @IsDate()
     data: Date;
 

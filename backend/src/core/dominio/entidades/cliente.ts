@@ -1,3 +1,4 @@
+import { PrimaryGeneratedColumn } from "typeorm";
 import Endereco from "../objetosDeValor/endereco";
 import Pedido from "./pedido";
 import { IsString, IsNotEmpty, IsEmail, Length, IsArray, IsNumber, IsPositive, Matches, ValidateNested, IsObject } from "class-validator"
