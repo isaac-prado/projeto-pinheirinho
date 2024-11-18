@@ -25,10 +25,10 @@ export class ClienteRepository implements IClienteRepository {
   async criarCliente(
     nome: string,
     cpf: string,
-    endereco: Endereco,
     telefone: string,
     saldo: number,
-    email: string
+    email: string,
+    endereco: Endereco
   ): Promise<void> {
     console.log("Criando cliente...");
   }
