@@ -1,29 +1,18 @@
-import { IsArray, IsDate, IsNumber, ValidateNested } from "class-validator";
-import Cliente from "./cliente";
 import Produto from "./produto";
-import { PrimaryGeneratedColumn } from "typeorm";
+import Cliente from "./cliente";
 
 export default class Pedido {
-    @PrimaryGeneratedColumn()
-    id: string;
-
-    @IsDate()
+    id: number;
     data: Date;
-
-    @IsNumber()
     valor: number;
-
-    @ValidateNested()
+    produtos: Produto[];
     cliente: Cliente;
 
-    @IsArray()
-    @ValidateNested({ each: true })
-    produto: Produto[];
-
-    constructor(data: Date, valor: number, cliente: Cliente, produto: Produto[]) {
+    constructor(id: number, data: Date, valor: number, produtos: Produto[], cliente: Cliente) {
+        this.id = id;
         this.data = data;
         this.valor = valor;
+        this.produtos = produtos;
         this.cliente = cliente;
-        this.produto = produto;
     }
 }

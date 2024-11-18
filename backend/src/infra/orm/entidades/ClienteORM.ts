@@ -1,29 +1,26 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import PedidoORM from "./pedidoORM";
+import { Entity, Column, OneToMany } from "typeorm";
+import PedidoORM from "./PedidoORM";
 
-@Entity("clientes")
+@Entity("cliente")
 export default class ClienteORM {
-    @PrimaryGeneratedColumn()
-    id: number;
-
     @Column()
-    nome: string;
+    nome!: string;
 
     @Column({ unique: true })
-    cpf: string;
+    cpf!: string;
+
+    @Column("jsonb")
+    endereco!: object;
 
     @Column()
-    endereco: object;
-
-    @Column()
-    telefone: string;
+    telefone!: string;
 
     @Column("decimal", { precision: 10, scale: 2 })
-    saldo: number;
+    saldo!: number;
 
     @Column({ nullable: true })
     email?: string;
 
     @OneToMany(() => PedidoORM, pedido => pedido.cliente, { eager: true })
-    pedidos: PedidoORM[];
+    pedidos!: PedidoORM[];
 }
