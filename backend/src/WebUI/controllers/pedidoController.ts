@@ -17,7 +17,6 @@ export class PedidoController {
     try {
       const { cpf, pedido } = req.body;
 
-      // Validação básica
       if (!cpf || !pedido) {
         return res.status(400).send("CPF e os dados do pedido são obrigatorios.");
       }
