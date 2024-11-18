@@ -1,30 +1,23 @@
-import { IsNumber, IsPositive, IsString, IsArray, ValidateNested } from "class-validator";
 import Pedido from "./pedido";
-import { PrimaryGeneratedColumn } from "typeorm";
 
 export default class Produto {
-    @PrimaryGeneratedColumn()
-    id: string;
-
-    @IsString()
+    id: number;
     nome: string;
-
-    @IsPositive()
-    @IsNumber()
     estoque: number;
-
-    @IsPositive()
-    @IsNumber()
     preco: number;
+    pedidos: Pedido[]
 
-    @IsArray()
-    @ValidateNested({ each: true })
-    pedido: Pedido[];
-
-    constructor(nome: string, estoque: number, preco: number, pedido: Pedido[]) {
+    constructor(
+        id: number,
+        nome: string, 
+        estoque: number,
+        preco: number,
+        pedidos: Pedido[]
+    ) {
+        this.id = id;
         this.nome = nome;
-        this.estoque = estoque;
         this.preco = preco;
-        this.pedido = pedido;
+        this.estoque = estoque;
+        this.pedidos = pedidos;
     }
 }

@@ -2,19 +2,19 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTabl
 import ClienteORM from "./clienteORM";
 import ProdutoORM from "./ProdutoORM";
 
-@Entity("pedidos") // Mapeia para a tabela 'pedidos'
+@Entity("pedido")
 export default class PedidoORM {
     @PrimaryGeneratedColumn()
     id!: number;
 
     @Column()
-    data: Date;
+    data!: Date;
 
     @Column("decimal", { precision: 10, scale: 2 })
-    valor: number;
+    valor!: number;
 
     @ManyToOne(() => ClienteORM, cliente => cliente.pedidos, { eager: true })
-    cliente: ClienteORM;
+    cliente!: ClienteORM;
 
     @ManyToMany(() => ProdutoORM, produto => produto.pedidos, { eager: true })
     @JoinTable({
