@@ -1,11 +1,10 @@
 import express, { Router } from "express";
-import Container from "typedi";
-import { PedidoController } from "../controllers/pedidoController";
+import { pedidoControllerBuilder } from "../builders/pedidoControllerBuilder";
 
 const rotaBasePedido: string = "/pedido";
 
 const pedidoRouters: Router = express.Router();
-const pedidoController = Container.get(PedidoController);
+const pedidoController = pedidoControllerBuilder();
 
 pedidoRouters.post(
   rotaBasePedido,
@@ -13,7 +12,7 @@ pedidoRouters.post(
 );
 
 pedidoRouters.get(
-  `${rotaBasePedido}/consulta`,
+  rotaBasePedido,
   pedidoController.rotaConsultarPedido.bind(pedidoController)
 );
 
