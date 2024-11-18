@@ -4,11 +4,8 @@ import Endereco from "../../../dominio/objetosDeValor/endereco";
 import { IClienteRepository } from "../../contratos/iClienteRepository";
 import { ICriarCliente } from "./interfaces/iCriarCliente";
 
-@Service()
 export class CriarCliente implements ICriarCliente {
-  public constructor(
-    @Inject() private readonly clienteRepository: IClienteRepository
-  ) {}
+  public constructor(private readonly clienteRepository: IClienteRepository) {}
   async executar(
     nome: string,
     cpf: string,

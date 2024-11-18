@@ -1,19 +1,17 @@
 import express from "express";
 import { ICriarCliente } from "../../core/aplicacao/casosDeUso/clientes/interfaces/iCriarCliente";
 import { IConsultarCliente } from "../../core/aplicacao/casosDeUso/clientes/interfaces/iConsultarCliente";
-import { Service, Inject } from "typedi";
 import { IRemoverCliente } from "../../core/aplicacao/casosDeUso/clientes/interfaces/iRemoverCliente";
 import { IAlterarCliente } from "../../core/aplicacao/casosDeUso/clientes/interfaces/iAlterarCliente";
 import { IAdicionarSaldoCliente } from "../../core/aplicacao/casosDeUso/clientes/interfaces/iAdicionarSaldoCliente";
 
-@Service()
 export class ClienteController {
   constructor(
-    @Inject() private readonly criarCliente: ICriarCliente,
-    @Inject() private readonly consultarCliente: IConsultarCliente,
-    @Inject() private readonly removerCliente: IRemoverCliente,
-    @Inject() private readonly alterarCliente: IAlterarCliente,
-    @Inject() private readonly adicionarSaldo: IAdicionarSaldoCliente
+    private readonly criarCliente: ICriarCliente,
+    private readonly consultarCliente: IConsultarCliente,
+    private readonly removerCliente: IRemoverCliente,
+    private readonly alterarCliente: IAlterarCliente,
+    private readonly adicionarSaldo: IAdicionarSaldoCliente
   ) {}
 
   public rotaAdicionarSaldo = async (
