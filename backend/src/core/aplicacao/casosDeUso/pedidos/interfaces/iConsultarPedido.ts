@@ -1,7 +1,6 @@
 export interface PedidoConsulta {
     cliente: string;
     data: Date;
-    produtos: string[];
     valor: number;
 }
 
