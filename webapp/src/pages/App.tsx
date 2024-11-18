@@ -8,6 +8,7 @@ import Customer from '../domain/customer';
 import { ArrowRightSharp, AttachMoney, ShoppingCart } from '@material-ui/icons';
 import { Switch } from '@material-ui/core';
 import { formatDateToFull } from '../utils/dateFormatter';
+import OrderPage from './Order/OrderPage';
 
 const App: React.FC = () => {
 
@@ -19,6 +20,8 @@ const App: React.FC = () => {
   const [modalConfig, setModalConfig] = useState({ title: '', action: '' });
   const [selectedRow, setSelectedRow] = useState<Customer | null>(null);
   const [tableData, setTableData] = useState<Customer[]>(customerMock);
+  
+  const [showOrderTable, setShowOrderTable] = useState<boolean>(false);
 
   const columns = [
     { title: 'Nome', field: 'name' },
@@ -128,6 +131,9 @@ const App: React.FC = () => {
         <div className="date-container">{formatDateToFull(currentTime)}</div>
       </div>
       <div className="box-buttons">
+        <button className="modal-button" onClick={() => setShowOrderTable(!showOrderTable)}>
+          {showOrderTable ? "Tela Inicial" : "Histórico de Pedidos"}
+        </button>
         <button className="modal-button" onClick={() => setUserModalOpen(true)}>
           Adicionar Cliente
         </button>
@@ -135,8 +141,13 @@ const App: React.FC = () => {
           Remover Cliente
         </button>
       </div>
-      <Table title="Gestão de assinaturas" columns={columns} data={tableData}
-        detailPanel={customerDetail}/>
+
+      {!showOrderTable 
+        ? <Table title="Gestão de assinaturas" columns={columns} data={tableData}
+          detailPanel={customerDetail}/>
+        : <OrderPage />
+      }
+      
       <footer className="footer">&copy; 2024 Pinheirinho Restaurant</footer>
 
       {/* Modal para Adicionar Cliente */}

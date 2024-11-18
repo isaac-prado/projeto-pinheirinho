@@ -6,7 +6,7 @@ import OrderPage from './pages/Order/OrderPage';
 
 ReactDOM.render(
   <React.StrictMode>
-    <OrderPage />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );
