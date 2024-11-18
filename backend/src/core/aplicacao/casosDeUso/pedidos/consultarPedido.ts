@@ -1,27 +1,26 @@
 import Pedido from "../../../dominio/entidades/pedido";
-import { IClienteRepository } from "../../contratos/iClienteRepository";
+import { IPedidoRepository } from "../../contratos/iPedidoRepository";
 import { IConsultarPedido, PedidoConsulta } from "./interfaces/iConsultarPedido";
 
 export class ConsultarPedido implements IConsultarPedido {
-    constructor(private readonly clienteRepository: IClienteRepository) {}
+    constructor(private readonly pedidoRepository: IPedidoRepository) {}
 
-    async executar(clienteCpf?: string, clienteNome?: string): Promise<PedidoConsulta[]> {
-        if (!clienteCpf && !clienteNome) {
+    async executar(clienteCpf?: string): Promise<PedidoConsulta[]> {
+        if (!clienteCpf) {
             throw new Error("É necessário fornecer o CPF ou o Nome do Cliente para consulta.");
         }
 
-        const cliente = await this.clienteRepository.consultarCliente(clienteCpf, clienteNome);
-        if (!cliente) {
-            throw new Error("Cliente não encontrado.");
+        const pedidos = await this.pedidoRepository.consultarPedidosPorCliente(clienteCpf);
+        if(!pedidos || pedidos.length === 0) {
+            throw new Error("Nenhum pedido encontrado para o cliente informado")
         }
 
-        const pedidosConsulta: PedidoConsulta[] = cliente.pedidos.map((pedido: Pedido) => ({
-            cliente: cliente.nome,
+        const pedidosConsulta: PedidoConsulta[] = pedidos.map((pedido: Pedido) => ({
+            cliente: pedido.cliente.nome,
             data: pedido.data,
             produtos: pedido.produto.map(produto => produto.nome),
             valor: pedido.valor,
         }));
-
         return pedidosConsulta;
     }
 }
