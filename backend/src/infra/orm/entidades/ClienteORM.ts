@@ -9,8 +9,8 @@ export default class ClienteORM {
     @Column({ unique: true })
     cpf!: string;
 
-    @Column("jsonb")
-    endereco!: object;
+    @Column()
+    endereco!: string;
 
     @Column()
     telefone!: string;
