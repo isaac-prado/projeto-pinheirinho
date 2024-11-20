@@ -2,12 +2,14 @@ import express from "express";
 import { IAdicionarPedido } from "../../core/aplicacao/casosDeUso/pedidos/interfaces/iAdicionarPedido";
 import { IConsultarPedido } from "../../core/aplicacao/casosDeUso/pedidos/interfaces/iConsultarPedido";
 import { IRemoverPedido } from "../../core/aplicacao/casosDeUso/pedidos/interfaces/iRemoverPedido";
+import { IListarPedidos } from "../../core/aplicacao/casosDeUso/pedidos/interfaces/iListarPedidos";
 
 export class PedidoController {
     constructor(
         private readonly criarPedido: IAdicionarPedido,
         private readonly consultarPedido: IConsultarPedido,
-        private readonly removerPedido: IRemoverPedido
+        private readonly removerPedido: IRemoverPedido,
+        private readonly listarPedidos: IListarPedidos
     ) {}
 
     public rotaAdicionarPedido = async (
@@ -62,7 +64,7 @@ export class PedidoController {
 
             await this.removerPedido.executar(parseInt(id));
             res.status(200).send("Pedido removido com sucesso.");
-            
+
         } catch (error) {
             console.error(error);
             res.status(500).send(error);

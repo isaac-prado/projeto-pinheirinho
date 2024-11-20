@@ -3,6 +3,9 @@ import Pedido from "../../../core/dominio/entidades/pedido";
 import { IPedidoRepository } from "../../../core/aplicacao/contratos/iPedidoRepository";
 
 export class PedidoRepository implements IPedidoRepository {
+    listarTodosPedidos(): Promise<Pedido[]> {
+        throw new Error("Method not implemented.");
+    }
     adicionarPedido(pedido: Pedido): Promise<void> {
         throw new Error("Method not implemented.");
     }

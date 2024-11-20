@@ -5,4 +5,5 @@ export interface IPedidoRepository {
     consultarPedidosPorCliente(clienteCpf: string): Promise<Pedido[]>;
     consultarPedidoPorId(pedidoId: number): Promise<Pedido | null>;
     removerPedido(pedidoId: string): Promise<void>;
+    listarTodosPedidos(): Promise<Pedido[]>;
 }
