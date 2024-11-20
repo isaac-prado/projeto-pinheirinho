@@ -70,4 +70,17 @@ export class PedidoController {
             res.status(500).send(error);
         }
     };
+
+    public rotaListarPedidos = async (
+        req: express.Request,
+        res: express.Response
+    ) => {
+        try {
+            const pedidos = await this.listarPedidos.executar();
+            return res.status(200).json(pedidos);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send(error);
+        }
+    }
 }

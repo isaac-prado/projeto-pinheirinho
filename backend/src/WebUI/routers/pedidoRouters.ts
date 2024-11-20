@@ -7,13 +7,23 @@ const pedidoRouters: Router = express.Router();
 const pedidoController = pedidoControllerBuilder();
 
 pedidoRouters.post(
-  rotaBasePedido,
-  pedidoController.rotaAdicionarPedido.bind(pedidoController)
+    rotaBasePedido,
+    pedidoController.rotaAdicionarPedido.bind(pedidoController)
 );
 
 pedidoRouters.get(
-  rotaBasePedido,
-  pedidoController.rotaConsultarPedido.bind(pedidoController)
+    `${rotaBasePedido}/:id`,
+    pedidoController.rotaConsultarPedido.bind(pedidoController)
+);
+
+pedidoRouters.delete(
+    `${rotaBasePedido}/:id`,
+    pedidoController.rotaRemoverPedido.bind(pedidoController)
+);
+
+pedidoRouters.get(
+    rotaBasePedido,
+    pedidoController.rotaListarPedidos.bind(pedidoController)
 );
 
 export default pedidoRouters;
