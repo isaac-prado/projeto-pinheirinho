@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Table from '../components/table';
-import { customerMock } from '../services/customerService';
+import CustomerService, { customerMock } from '../services/customerService';
 import './App.css';
 import Modal from '../components/modal';
 import CurrencyFormatter from '../utils/currencyFormatter';
@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const columns = [
     { title: 'Nome', field: 'name' },
     { title: 'Crédito', field: 'credit', 
-      render: (rowData: Customer) => CurrencyFormatter.formatToBRL(rowData.credit) },
+      render: (rowData: Customer) => CurrencyFormatter.formatToBRL(rowData.credit ?? 0) },
     {
       title: 'Ativo',
       field: 'isActive',
@@ -103,18 +103,30 @@ const App: React.FC = () => {
     }
   };
 
-  const handleAddUser = (data: Customer) => {
-    customerMock.push(data);
-    setUserModalOpen(false);
+  const customerService = new CustomerService();
+
+  const handleAddUser = async (data: Customer) => {
+    try {
+      await customerService.addCustomer(data);
+      setTableData((prevData) => [...prevData, data])
+      setUserModalOpen(false);
+    } catch (error) {
+      console.error("Erro ao adicionar cliente:", error);
+    }
   };
 
-  const handleRemoveUser = (data: { cpf: string }) => {
-    const index = customerMock.findIndex((customer) => customer.cpf === data.cpf);
-    if (index !== -1) {
-      customerMock.splice(index, 1);
+  const handleRemoveUser = async (data: { cpf: string }) => {
+    try {
+      await customerService.removeCustomer(data.cpf);
+      setTableData((prevData) =>
+        prevData.filter((cliente) => cliente.cpf !== data.cpf)
+      );
+      setRemoveModalOpen(false);
+    } catch (error) {
+      console.error("Erro ao remover cliente:", error);
     }
-    setRemoveModalOpen(false);
   };
+  
 
   useEffect(() => {
     const interval = setInterval(() => {

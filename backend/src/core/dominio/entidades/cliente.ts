@@ -1,9 +1,8 @@
-import Endereco from "../objetosDeValor/endereco";
 import Pedido from "./pedido";
 export default class Cliente {
     nome: string;
     cpf: string;
-    endereco: Endereco;
+    endereco: string;
     telefone: string;
     saldo: number;
     email?: string;
@@ -12,7 +11,7 @@ export default class Cliente {
     constructor(
         nome: string, 
         cpf: string, 
-        endereco: Endereco, 
+        endereco: string, 
         telefone: string, 
         saldo: number, 
         pedidos: Pedido[], 

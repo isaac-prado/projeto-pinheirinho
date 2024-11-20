@@ -1,5 +1,4 @@
 import Pedido from "../../../dominio/entidades/pedido";
-import Endereco from "../../../dominio/objetosDeValor/endereco";
 import { IClienteRepository } from "../../contratos/iClienteRepository";
 import { IAlterarCliente } from "./interfaces/iAlterarCliente";
 
@@ -11,7 +10,7 @@ export class AlterarCliente implements IAlterarCliente {
         cpf: string,
         telefone?: string,
         email?: string,
-        endereco?: Endereco,
+        endereco?: string,
         pedidos?: Pedido[]
     ) {
         const cliente = await this.clienteRepository.consultarCliente(cpf);

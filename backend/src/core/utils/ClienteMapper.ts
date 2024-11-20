@@ -1,6 +1,5 @@
-import ClienteORM from "../../infra/orm/entidades/clienteORM";
+import ClienteORM from "../../infra/orm/entidades/ClienteORM";
 import Cliente from "../dominio/entidades/cliente";
-import { EnderecoMapper } from "./EnderecoMapper";
 import { PedidoMapper } from "./PedidoMapper";
 
 export class ClienteMapper {
@@ -8,7 +7,7 @@ export class ClienteMapper {
         return new Cliente(
         clienteORM.nome,
         clienteORM.cpf,
-        EnderecoMapper.toDomain(clienteORM.endereco),
+        clienteORM.endereco,
         clienteORM.telefone,
         clienteORM.saldo,
         clienteORM.pedidos.map(pedidoORM => PedidoMapper.toDomain(pedidoORM)),
@@ -23,7 +22,7 @@ export class ClienteMapper {
         clienteORM.saldo = cliente.saldo;
         clienteORM.email = cliente.email;
         clienteORM.pedidos = cliente.pedidos.map(pedido => PedidoMapper.toPersistence(pedido));
-        clienteORM.endereco = EnderecoMapper.toPersistence(cliente.endereco);
+        clienteORM.endereco
         return clienteORM;
     }
 }

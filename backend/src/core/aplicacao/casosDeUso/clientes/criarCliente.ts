@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import Endereco from "../../../dominio/objetosDeValor/endereco";
 import { IClienteRepository } from "../../contratos/iClienteRepository";
 import { ICriarCliente } from "./interfaces/iCriarCliente";
 
@@ -10,7 +9,7 @@ export class CriarCliente implements ICriarCliente {
     async executar(
         nome: string,
         cpf: string,
-        endereco: Endereco,
+        endereco: string,
         telefone: string,
         saldo: number,
         email: string
