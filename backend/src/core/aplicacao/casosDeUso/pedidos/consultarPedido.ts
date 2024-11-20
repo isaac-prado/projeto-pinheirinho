@@ -1,6 +1,7 @@
 import Pedido from "../../../dominio/entidades/pedido";
 import { IPedidoRepository } from "../../contratos/iPedidoRepository";
-import { IConsultarPedido, PedidoConsulta } from "./interfaces/iConsultarPedido";
+import { PedidoConsulta } from "../../models/pedidoConsulta";
+import { IConsultarPedido } from "./interfaces/iConsultarPedido";
 
 export class ConsultarPedido implements IConsultarPedido {
     constructor(private readonly pedidoRepository: IPedidoRepository) {}

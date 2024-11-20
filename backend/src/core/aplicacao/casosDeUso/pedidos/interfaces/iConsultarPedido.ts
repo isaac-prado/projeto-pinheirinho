@@ -1,8 +1,4 @@
-export interface PedidoConsulta {
-    cliente: string;
-    data: Date;
-    valor: number;
-}
+import { PedidoConsulta } from "../../../models/pedidoConsulta";
 
 export interface IConsultarPedido {
     executar(clienteCpf?: string, clienteNome?: string): Promise<PedidoConsulta[]>;
