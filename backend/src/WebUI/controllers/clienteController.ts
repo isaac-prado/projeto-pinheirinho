@@ -57,13 +57,21 @@ export class ClienteController {
         res.send(cliente);
     };
 
-    public rotaRemoverCliente = async (
-        req: express.Request,
-        res: express.Response
-    ) => {
-        var { cpf } = req.body;
-        await this.removerCliente.executar(cpf);
-        res.send("Cliente removido com sucesso");
+    public rotaRemoverCliente = async (req: express.Request, res: express.Response) => {
+        try {
+            const { cpf } = req.body;
+
+            if (!cpf) {
+                res.status(400).send("O CPF é obrigatório.");
+                return;
+            }
+
+            await this.removerCliente.executar(cpf);
+            res.send("Cliente removido com sucesso");
+        } catch (error) {
+            console.error("Erro ao remover cliente:", error);
+            res.status(500).send("Erro ao remover cliente");
+        }
     };
 
     public rotaAlterarCliente = async (

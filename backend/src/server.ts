@@ -22,8 +22,8 @@ AppDataSource.initialize()
   .then(() => {
     console.log("Conexão com o banco de dados estabelecida com sucesso!");
 
-    app.listen(3000, () => {
-      console.log("Servidor rodando na porta 3000")
+    app.listen(5432, () => {
+      console.log("Servidor rodando na porta 5432")
     });
   })
   .catch(e => {

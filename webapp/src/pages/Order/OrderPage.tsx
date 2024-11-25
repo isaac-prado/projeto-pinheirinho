@@ -11,7 +11,7 @@ const OrderPage: React.FC = () => {
         { title: 'Data', field: 'date',
             render: (rowData: Order) => formatDateToShort(new Date(rowData.date))
          },
-        { title: 'Cliente', field: 'customer.name' },
+        { title: 'Cliente', field: 'name' },
         { title: 'Valor Total', field: 'totalAmount', filtering: false,
             render: (rowData: Order) =>  CurrencyFormatter.formatToBRL(rowData.totalAmount)},
     ];

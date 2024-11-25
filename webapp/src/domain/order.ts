@@ -3,6 +3,6 @@ import Customer from "./customer";
 export default interface Order {
     cod: string, 
     date: string, 
-    customer: Customer,
+    name: string,
     totalAmount: number
 }
