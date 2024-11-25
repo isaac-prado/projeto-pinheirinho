@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Table from '../components/table';
-import CustomerService, { customerMock } from '../services/customerService';
+import CustomerService from '../services/customerService';
 import './App.css';
 import Modal from '../components/modal';
 import CurrencyFormatter from '../utils/currencyFormatter';
 import Customer from '../domain/customer';
 import { ArrowRightSharp, AttachMoney, ShoppingCart } from '@material-ui/icons';
-import { Switch } from '@material-ui/core';
 import { formatDateToFull } from '../utils/dateFormatter';
 import OrderPage from './Order/OrderPage';
 
@@ -19,21 +18,17 @@ const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({ title: '', action: '' });
   const [selectedRow, setSelectedRow] = useState<Customer | null>(null);
-  const [tableData, setTableData] = useState<Customer[]>(customerMock);
+  const [tableData, setTableData] = useState<Customer[]>([]);
+
+  const [loading, setLoading] = useState<boolean>(true); 
+  const [error, setError] = useState<string | null>(null);
   
   const [showOrderTable, setShowOrderTable] = useState<boolean>(false);
 
   const columns = [
-    { title: 'Nome', field: 'name' },
-    { title: 'Crédito', field: 'credit', 
-      render: (rowData: Customer) => CurrencyFormatter.formatToBRL(rowData.credit ?? 0) },
-    {
-      title: 'Ativo',
-      field: 'isActive',
-      render: (rowData: Customer) => (
-        <Switch checked={rowData.isActive} color="primary" disabled />
-      ),
-    },
+    { title: 'Nome', field: 'nome' },
+    { title: 'Crédito', field: 'saldo', 
+      render: (rowData: Customer) => CurrencyFormatter.formatToBRL(rowData.saldo ?? 0) },
     {
       title: 'Ações',
       field: 'actions',
@@ -67,7 +62,7 @@ const App: React.FC = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td>{rowData.phone}</td>
+                  <td>{rowData.telefone}</td>
                   <td>{rowData.email ?? '-'}</td>
                   <td>{rowData.cpf}</td>
                 </tr>
@@ -88,18 +83,31 @@ const App: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (value: number) => {
+  const handleSubmit = async(value: number) => {
     if (selectedRow) {
       const updatedData = tableData.map((row) => {
-        if (row.name === selectedRow.name) { //debit? 
+        if (row.nome === selectedRow.nome) { //debit? 
+          if (modalConfig.action !== 'updateCredit' && row.saldo < value) {
+            alert('Saldo insuficiente');
+            return row;
+          }
           return modalConfig.action === 'updateCredit'
-            ? { ...row, credit: row.credit + value }
-            : { ...row, credit: row.credit - value };
+            ? { ...row, saldo: row.saldo + value }
+            : { ...row, saldo: row.saldo - value };
         }
         return row;
       });
       setTableData(updatedData);
       setIsModalOpen(false);
+
+      try {
+        const updatedCustomer = updatedData.find((row) => row.nome === selectedRow.nome);
+        if (updatedCustomer) {
+          await customerService.updateCustomer(updatedCustomer);
+        }
+      } catch (error) {
+        alert("Erro ao atualizar o cliente no backend");
+      }
     }
   };
 
@@ -135,6 +143,41 @@ const App: React.FC = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        setLoading(true);
+        const customer = await customerService.getCustomers(); 
+        const customersArray = Array.isArray(customer) ? customer : [customer];
+        const formattedData = customersArray.map((customer: any) => ({
+          cpf: customer.cpf,
+          telefone: customer.telefone,
+          nome: customer.nome,
+          saldo: customer.saldo,
+          endereco: customer.endereco,
+          pedidos: customer.pedidos || [],
+        }));
+        console.log(formattedData);
+        setTableData(formattedData);
+      } catch (err) {
+        setError("Erro ao carregar os clientes. Tente novamente mais tarde.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCustomers();
+  }, []);
+
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <>
