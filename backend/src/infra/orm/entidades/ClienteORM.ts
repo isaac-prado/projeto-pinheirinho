@@ -1,8 +1,11 @@
-import { Entity, Column, OneToMany } from "typeorm";
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import PedidoORM from "./PedidoORM";
 
 @Entity("cliente")
 export default class ClienteORM {
+    @PrimaryGeneratedColumn() 
+    id!: number;
+
     @Column()
     nome!: string;
 
@@ -21,6 +24,6 @@ export default class ClienteORM {
     @Column({ nullable: true })
     email?: string;
 
-    @OneToMany(() => PedidoORM, pedido => pedido.cliente, { eager: true })
+    @OneToMany(() => PedidoORM, pedido => pedido.cliente)
     pedidos!: PedidoORM[];
 }

@@ -1,15 +1,17 @@
-import Cliente from "../../dominio/entidades/cliente";
+import ClienteORM from "../../../infra/orm/entidades/ClienteORM";
 
 export interface IClienteRepository {
-  consultarCliente(cpf?: string | null, nome?: string): Promise<Cliente>;
-  criarCliente(
-    nome: string,
-    cpf: string,
-    telefone: string,
-    saldo: number,
-    email: string,
-    endereco: string
-  ): Promise<void>;
-  removerCliente(cpf: string): Promise<void>;
-  alterarCliente(cliente: Cliente): Promise<void>;
+    alterarCliente(cliente: ClienteORM): Promise<void>;
+    removerCliente(cpf: string): Promise<void>;
+    consultarCliente(cpf?: string, nome?: string): Promise<ClienteORM | null>;
+    criarCliente(
+        nome: string,
+        cpf: string,
+        telefone: string,
+        saldo: number,
+        email: string,
+        endereco: string
+    ): Promise<void>;
+    obterClientes(): Promise<ClienteORM[]>;
 }
+

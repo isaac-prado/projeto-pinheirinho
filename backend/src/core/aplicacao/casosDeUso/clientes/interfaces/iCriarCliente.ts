@@ -5,6 +5,6 @@ export interface ICriarCliente {
     endereco: string,
     telefone: string,
     saldo: number,
-    email: string
+    email: string,
   ): Promise<void>;
 }

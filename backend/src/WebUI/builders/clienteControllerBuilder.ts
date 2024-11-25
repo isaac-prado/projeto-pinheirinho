@@ -4,6 +4,7 @@ import { ConsultarCliente } from "../../core/aplicacao/casosDeUso/clientes/consu
 import { CriarCliente } from "../../core/aplicacao/casosDeUso/clientes/criarCliente";
 import { RemoverCliente } from "../../core/aplicacao/casosDeUso/clientes/removerCliente";
 import { ClienteController } from "../controllers/clienteController";
+import { ObterClientes } from "../../core/aplicacao/casosDeUso/clientes/obterClientes";
 import { ClienteRepository } from "./../../infra/sql/implementacoes/clienteRepository";
 const clienteRepository = new ClienteRepository();
 
@@ -12,6 +13,7 @@ const consultarCliente = new ConsultarCliente(clienteRepository);
 const removerCliente = new RemoverCliente(clienteRepository);
 const alterarCliente = new AlterarCliente(clienteRepository);
 const adicionarSaldo = new AdicionarSaldoCliente(clienteRepository);
+const obterClientes = new ObterClientes(clienteRepository);
 
 export function clienteControllerBuilder() {
     return new ClienteController(
@@ -19,6 +21,7 @@ export function clienteControllerBuilder() {
         consultarCliente,
         removerCliente,
         alterarCliente,
-        adicionarSaldo
+        adicionarSaldo,
+        obterClientes
     );
 }

@@ -4,15 +4,16 @@ import { PedidoMapper } from "./PedidoMapper";
 
 export class ClienteMapper {
     static toDomain(clienteORM: ClienteORM): Cliente {
-        return new Cliente(
-        clienteORM.nome,
-        clienteORM.cpf,
-        clienteORM.endereco,
-        clienteORM.telefone,
-        clienteORM.saldo,
-        clienteORM.pedidos.map(pedidoORM => PedidoMapper.toDomain(pedidoORM)),
-        clienteORM.email
-    )}
+        const cliente = new Cliente(
+            clienteORM.nome,
+            clienteORM.cpf,
+            clienteORM.endereco,
+            clienteORM.telefone,
+            clienteORM.saldo,
+            clienteORM.email
+        );
+        return cliente;
+    }
 
     static toPersistence(cliente: Cliente): ClienteORM {
         const clienteORM = new ClienteORM();
@@ -21,7 +22,6 @@ export class ClienteMapper {
         clienteORM.telefone = cliente.telefone;
         clienteORM.saldo = cliente.saldo;
         clienteORM.email = cliente.email;
-        clienteORM.pedidos = cliente.pedidos.map(pedido => PedidoMapper.toPersistence(pedido));
         clienteORM.endereco
         return clienteORM;
     }

@@ -6,7 +6,6 @@ export default class Cliente {
     telefone: string;
     saldo: number;
     email?: string;
-    pedidos: Pedido[];
 
     constructor(
         nome: string, 
@@ -14,7 +13,6 @@ export default class Cliente {
         endereco: string, 
         telefone: string, 
         saldo: number, 
-        pedidos: Pedido[], 
         email?: string
     ) {
         this.nome = nome;
@@ -22,7 +20,6 @@ export default class Cliente {
         this.endereco = endereco;
         this.telefone = telefone;
         this.saldo = saldo;
-        this.pedidos = pedidos;
         if(email) this.email = email;
     }
 

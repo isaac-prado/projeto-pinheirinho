@@ -11,6 +11,7 @@ export class AlterarCliente implements IAlterarCliente {
         telefone?: string,
         email?: string,
         endereco?: string,
+        saldo?: number,
         pedidos?: Pedido[]
     ) {
         const cliente = await this.clienteRepository.consultarCliente(cpf);
@@ -22,7 +23,7 @@ export class AlterarCliente implements IAlterarCliente {
         if (telefone) cliente.telefone = telefone;
         if (endereco) cliente.endereco = endereco;
         if (email) cliente.email = email;
-        if (pedidos) cliente.pedidos = pedidos;
+        if (saldo !== undefined) cliente.saldo = saldo;
 
         await this.clienteRepository.alterarCliente(cliente);
     }

@@ -1,6 +1,6 @@
 import Pedido from "../dominio/entidades/pedido";
 import PedidoORM from "../../infra/orm/entidades/PedidoORM";
-import { ProdutoMapper } from "./ProdutoMapper"
+import { ProdutoMapper } from "./ProdutoMapper";
 import { ClienteMapper } from "./ClienteMapper";
 
 export class PedidoMapper {
@@ -9,9 +9,9 @@ export class PedidoMapper {
             pedidoORM.id,
             pedidoORM.data,
             pedidoORM.valor,
-            pedidoORM.produtos.map(produtoOrm => ProdutoMapper.toDomain(produtoOrm)),
-            ClienteMapper.toDomain(pedidoORM.cliente)
-        );
+            ClienteMapper.toDomain(pedidoORM.cliente), 
+            pedidoORM.produtos.map(produtoOrm => ProdutoMapper.toDomain(produtoOrm))
+        ) 
     }
 
     static toPersistence(pedido: Pedido): PedidoORM {
@@ -19,8 +19,8 @@ export class PedidoMapper {
         pedidoORM.id = pedido.id;
         pedidoORM.data = pedido.data;
         pedidoORM.valor = pedido.valor;
-        pedidoORM.produtos = pedido.produtos.map(produto => ProdutoMapper.toPersistence(produto));
-        pedidoORM.cliente = ClienteMapper.toPersistence(pedido.cliente);
+        pedidoORM.cliente = ClienteMapper.toPersistence(pedido.cliente); 
+        pedidoORM.produtos = pedido.produtos.map(produto => ProdutoMapper.toPersistence(produto)); 
         return pedidoORM;
     }
 }

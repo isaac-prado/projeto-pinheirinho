@@ -25,5 +25,9 @@ clienteRouters.post(
   `${rotaBaseCliente}/adicionarSaldo`,
   clienteController.rotaAdicionarSaldo.bind(clienteController)
 );
+clienteRouters.get(
+  `${rotaBaseCliente}/obterClientes`,
+  clienteController.rotaObterClientes.bind(clienteController)
+);
 
 export default clienteRouters;
