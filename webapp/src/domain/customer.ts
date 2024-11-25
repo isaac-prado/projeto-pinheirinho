@@ -1,9 +1,8 @@
 export default interface Customer {
-    name: string;
+    nome: string;
     cpf: string;
-    address: string;
-    phone: string;
-    credit: number;
+    endereco: string;
+    telefone: string;
+    saldo: number;
     email?: string;
-    isActive: boolean;
 }

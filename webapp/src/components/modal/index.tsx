@@ -14,17 +14,18 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant = 'default' }) => {
   const [value, setValue] = useState<number>(0);
   const [cpf, setCpf] = useState<string>('');
-  const [name, setName] = useState<string>('');
-  const [address, setAddress] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
+  const [nome, setNome] = useState<string>('');
+  const [endereco, setEndereco] = useState<string>('');
+  const [telefone, setTelefone] = useState<string>('');
+  const saldo = 0;
 
   const handleSubmit = () => {
     if (variant === 'register') {
-      onSubmit({ cpf, name, address, phone });
+      onSubmit({ cpf, nome, endereco, telefone, saldo });
       setCpf('');
-      setName('');
-      setAddress('');
-      setPhone('');
+      setNome('');
+      setEndereco('');
+      setTelefone('');
     } else if (variant === 'remove') {
       onSubmit({ cpf });
       setCpf('');
@@ -54,24 +55,24 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
               fullWidth
               name='nome'
               margin="normal"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
             />
             <TextField
               label="Endereço"
               fullWidth
               name='endereco'
               margin="normal"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
+              value={endereco}
+              onChange={(e) => setEndereco(e.target.value)}
             />
             <TextField
               label="Telefone"
               fullWidth
               name='telefone'
               margin="normal"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={telefone}
+              onChange={(e) => setTelefone(e.target.value)}
             />
           </>
         ) : variant === 'remove' ? (
