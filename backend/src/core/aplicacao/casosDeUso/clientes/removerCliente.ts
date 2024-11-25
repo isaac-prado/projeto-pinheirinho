@@ -1,6 +1,6 @@
-import { Inject } from "typedi";
 import { IClienteRepository } from "../../contratos/iClienteRepository";
 import { IRemoverCliente } from "./interfaces/iRemoverCliente";
+import Cliente from "../../../dominio/entidades/cliente";
 
 export class RemoverCliente implements IRemoverCliente {
     public constructor(
@@ -8,12 +8,29 @@ export class RemoverCliente implements IRemoverCliente {
     ) {}
 
     async executar(cpf: string): Promise<void> {
-        var cliente = await this.clienteRepository.consultarCliente(cpf);
+        
+        const clienteOrm = await this.clienteRepository.consultarCliente(cpf);
 
-        if (cliente.podeSerRemovido()) {
+        
+        if (!clienteOrm) {
+            throw new Error("Cliente não encontrado.");
+        }
+
+        const cliente = new Cliente(
+            clienteOrm.nome,
+            clienteOrm.cpf,
+            clienteOrm.endereco,
+            clienteOrm.telefone,
+            Number(clienteOrm.saldo),
+            clienteOrm.email
+        );
+
+        
+        if (!cliente.podeSerRemovido()) {
             throw new Error("Cliente não pode ser removido pois possui saldo");
         }
 
         await this.clienteRepository.removerCliente(cpf);
     }
 }
+

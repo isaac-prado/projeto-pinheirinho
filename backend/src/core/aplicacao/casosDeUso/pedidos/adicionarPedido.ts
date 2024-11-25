@@ -1,7 +1,10 @@
 import Pedido from "../../../dominio/entidades/pedido";
+import Cliente from "../../../dominio/entidades/cliente";
+import ClienteORM from "../../../../infra/orm/entidades/ClienteORM";
 import { IClienteRepository } from "../../contratos/iClienteRepository";
 import { IPedidoRepository } from "../../contratos/iPedidoRepository";
 import { IAdicionarPedido } from "./interfaces/iAdicionarPedido";
+import { ClienteMapper } from "../../../utils/ClienteMapper";
 
 export class AdicionarPedido implements IAdicionarPedido {
     public constructor(
@@ -10,10 +13,12 @@ export class AdicionarPedido implements IAdicionarPedido {
     ) {}
 
     async executar(cpf: string, pedido: Pedido): Promise<void> {
-        const cliente = await this.clienteRepository.consultarCliente(cpf);
-        if (!cliente) {
+        const clienteOrm = await this.clienteRepository.consultarCliente(cpf);
+        if (!clienteOrm) {
             throw new Error("Cliente não encontrado.");
         }
+
+        const cliente = ClienteMapper.toDomain(clienteOrm); 
 
         if (cliente.saldo < pedido.valor) {
             throw new Error("Saldo Insuficiente.");
@@ -22,9 +27,11 @@ export class AdicionarPedido implements IAdicionarPedido {
         cliente.descontarSaldo(pedido.valor);
         pedido.data = new Date();
 
-        cliente.pedidos.push(pedido);
+        pedido.cliente = cliente; 
 
         await this.pedidoRepository.adicionarPedido(pedido);
-        await this.clienteRepository.alterarCliente(cliente);
+
+        clienteOrm.saldo = cliente.saldo;
+        await this.clienteRepository.alterarCliente(clienteOrm);
     }
 }

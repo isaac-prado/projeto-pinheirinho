@@ -16,14 +16,16 @@ app.listen(8080, () => {
   console.log("Servidor Ouvindo");
 });
 
-// AppDataSource.initialize()
-//   .then(() => {
-//     console.log("Conexão com o banco de dados estabelecida com sucesso!");
+//testConnection();
 
-//     app.listen(3000, () => {
-//       console.log("Servidor rodando na porta 3000")
-//     });
-//   })
-//   .catch(e => {
-//     console.error(`Erro ao conectar no banco: ${e}`);
-//   });
+AppDataSource.initialize()
+  .then(() => {
+    console.log("Conexão com o banco de dados estabelecida com sucesso!");
+
+    app.listen(3000, () => {
+      console.log("Servidor rodando na porta 3000")
+    });
+  })
+  .catch(e => {
+    console.error(`Erro ao conectar no banco: ${e}`);
+  });

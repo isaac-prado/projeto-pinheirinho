@@ -8,7 +8,11 @@ export class AdicionarSaldoCliente implements IAdicionarSaldoCliente {
     async executar(cpf: string, valor: number): Promise<void> {
         const cliente = await this.clienteRepository.consultarCliente(cpf);
 
-        cliente.adicionarSaldo(valor);
+        if (!cliente) {
+            throw new Error("Cliente não encontrado.");
+        }
+
+        cliente.saldo += valor;
 
         await this.clienteRepository.alterarCliente(cliente);
     }

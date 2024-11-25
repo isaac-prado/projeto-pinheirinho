@@ -8,6 +8,20 @@ export class ConsultarCliente implements IConsultarCliente {
     ) {}
 
     async executar(cpf?: string, nome?: string): Promise<Cliente> {
-        return await this.clienteRepository.consultarCliente(cpf, nome);
+        const clienteOrm = await this.clienteRepository.consultarCliente(cpf, nome);
+    
+        if (!clienteOrm) {
+            throw new Error("Cliente não encontrado.");
+        }
+    
+        return new Cliente(
+            clienteOrm.nome,
+            clienteOrm.cpf,
+            clienteOrm.endereco,
+            clienteOrm.telefone,
+            Number(clienteOrm.saldo),
+            clienteOrm.email
+        );
     }
+    
 }

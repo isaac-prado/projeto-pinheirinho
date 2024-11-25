@@ -16,7 +16,7 @@ export default class PedidoORM {
     @ManyToOne(() => ClienteORM, cliente => cliente.pedidos, { eager: true })
     cliente!: ClienteORM;
 
-    @ManyToMany(() => ProdutoORM, produto => produto.pedidos, { eager: true })
+    @ManyToMany(() => ProdutoORM, produto => produto.pedidos)
     @JoinTable({
         name: "pedido_produto",
         joinColumn: { name: "pedido_id", referencedColumnName: "id" },
