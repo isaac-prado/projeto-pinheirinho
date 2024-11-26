@@ -1,190 +1,112 @@
 import React, { useState, useEffect } from 'react';
 import Table from '../components/table';
-import CustomerService from '../services/customerService';
-import { customerMock } from '../services/customerService';
-import './App.css';
 import Modal from '../components/modal';
+import Product from '../domain/product';
 import CurrencyFormatter from '../utils/currencyFormatter';
-import Customer from '../domain/customer';
-import { ArrowRightSharp, AttachMoney, ShoppingCart } from '@material-ui/icons';
 import { formatDateToFull } from '../utils/dateFormatter';
-import OrderPage from './Order/OrderPage';
+import './ProductPage.css';
 
-const App: React.FC = () => {
-
+const ProductPage: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [userModalOpen, setUserModalOpen] = useState(false);
-  const [removeModalOpen, setRemoveModalOpen] = useState(false);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({ title: '', action: '' });
-  const [selectedRow, setSelectedRow] = useState<Customer | null>(null);
-  const [tableData, setTableData] = useState<Customer[]>(customerMock);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [tableData, setTableData] = useState<Product[]>([]);
+  const [userModalOpen, setUserModalOpen] = useState(false);
+  const [removeModalOpen, setRemoveModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [loading, setLoading] = useState<boolean>(true); 
-  const [error, setError] = useState<string | null>(null);
-  
-  const [showOrderTable, setShowOrderTable] = useState<boolean>(false);
+  const initialData: Product[] = [
+    { id: '1', nome: 'Produto 1', quantidade: 10, preco: 25.0 },
+    { id: '2', nome: 'Produto 2', quantidade: 20, preco: 50.0 },
+    { id: '3', nome: 'Produto 3', quantidade: 0, preco: 15.0 },
+  ];
+
+  useEffect(() => {
+    setTableData(initialData);
+  }, []);
+
+  const filteredTableData = tableData.filter((product) =>
+    product.nome.toLowerCase().includes(searchQuery.toLowerCase()) || product.id.includes(searchQuery)
+  );
 
   const columns = [
     { title: 'Nome', field: 'nome' },
-    { title: 'Crédito', field: 'saldo', 
-      render: (rowData: Customer) => CurrencyFormatter.formatToBRL(rowData.saldo ?? 0) },
+    { title: 'ID', field: 'id' },
+    { title: 'Quantidade em Estoque', field: 'quantidade' },
+    {
+      title: 'Preço',
+      field: 'preco',
+      render: (rowData: Product) => CurrencyFormatter.formatToBRL(rowData.preco ?? 0),
+    },
     {
       title: 'Ações',
       field: 'actions',
-      render: (rowData: Customer) => (
+      render: (rowData: Product) => (
         <div className="action-icons">
-          <AttachMoney className="action-icon" name = "icon dinheiro"  onClick={() => handleOpenModal(rowData, 'updateCredit')} />
-          <ShoppingCart className="action-icon" onClick={() => handleOpenModal(rowData, 'addOrder')} />
+          <button onClick={() => handleOpenModal(rowData, 'update')}>Alterar</button>
+          <button onClick={() => handleOpenModal(rowData, 'remove')}>Remover</button>
         </div>
       ),
     },
   ];
 
-  const customerDetail: any = [
-    {
-      icon: React.forwardRef((_) => <ArrowRightSharp/>),
-      tooltip: 'Ver detalhes',
-      render: (rowData: Customer) => {
-        return (
-          <div
-            style={{
-              backgroundColor: '#f9f9f6',
-            }}
-          >
-            <table id="customerDetail">
-              <thead>
-                <tr>
-                  <th>Telefone</th>
-                  <th>Email</th>
-                  <th>CPF</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{rowData.telefone}</td>
-                  <td>{rowData.email ?? '-'}</td>
-                  <td>{rowData.cpf}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )
-      },
-    },
-  ]
-
-  const handleOpenModal = (rowData: Customer, action: string) => {
-    setSelectedRow(rowData);
+  const handleOpenModal = (rowData: Product, action: string) => {
+    setSelectedProduct(rowData);
     setModalConfig({
-      title: action === 'updateCredit' ? 'Adicionar crédito' : 'Adicionar pedido',
+      title: action === 'update' ? 'Alterar Produto' : 'Remover Produto',
       action,
     });
     setIsModalOpen(true);
   };
 
-  const handleSubmit = async(value: number) => {
-    if (selectedRow) {
-      const updatedData = tableData.map((row) => {
-        if (row.nome === selectedRow.nome) { //debit? 
-          if (modalConfig.action !== 'updateCredit' && row.saldo < value) {
-            alert('Saldo insuficiente');
-            return row;
-          }
-          return modalConfig.action === 'updateCredit'
-            ? { ...row, saldo: row.saldo + value }
-            : { ...row, saldo: row.saldo - value };
-        }
-        return row;
-      });
-      setTableData(updatedData);
-      setIsModalOpen(false);
+  const handleAddProduct = (product: Product) => {
+    setTableData((prevData) => [...prevData, product]);
+    setUserModalOpen(false);
+  };
 
-      // try {
-      //   const updatedCustomer = updatedData.find((row) => row.nome === selectedRow.nome);
-      //   if (updatedCustomer) {
-      //     await customerService.updateCustomer(updatedCustomer);
-      //   }
-      // } catch (error) {
-      //   alert("Erro ao atualizar o cliente no backend");
-      // }
+  const handleUpdateProduct = (updatedProduct: Product) => {
+    setTableData((prevData) =>
+      prevData.map((product) =>
+        product.id === updatedProduct.id ? { ...product, quantidade: updatedProduct.quantidade, preco: updatedProduct.preco } : product
+      )
+    );
+    setIsModalOpen(false);
+  };
+
+  const handleRemoveProduct = (productId: string) => {
+    const productToRemove = tableData.find((product) => product.id === productId);
+    if (productToRemove && productToRemove.quantidade > 0) {
+      setRemoveModalOpen(true);
+    } else {
+      setTableData((prevData) => prevData.filter((product) => product.id !== productId));
     }
   };
 
-  const customerService = new CustomerService();
-
-  const handleAddUser = async (data: Customer) => {
-    setTableData((prevData) => [...prevData, data])
-    setUserModalOpen(false);
-    // try {
-    //   await customerService.addCustomer(data);
-    //   setTableData((prevData) => [...prevData, data])
-    //   setUserModalOpen(false);
-    // } catch (error) {
-    //   console.error("Erro ao adicionar cliente:", error);
-    // }
+  const confirmRemoveProduct = () => {
+    if (selectedProduct) {
+      setTableData((prevData) => prevData.filter((product) => product.id !== selectedProduct.id));
+      setRemoveModalOpen(false);
+      setSelectedProduct(null);
+    }
   };
 
-  const handleRemoveUser = async (data: { cpf: string }) => {
+  const handleReduceQuantity = (productId: string) => {
     setTableData((prevData) =>
-      prevData.filter((cliente) => cliente.cpf !== data.cpf)
+      prevData.map((product) =>
+        product.id === productId
+          ? { ...product, quantidade: product.quantidade > 0 ? product.quantidade - 1 : 0 }
+          : product
+      )
     );
-    setRemoveModalOpen(false);
-    // try {
-    //   await customerService.removeCustomer(data.cpf);
-    //   setTableData((prevData) =>
-    //     prevData.filter((cliente) => cliente.cpf !== data.cpf)
-    //   );
-    //   setRemoveModalOpen(false);
-    // } catch (error) {
-    //   console.error("Erro ao remover cliente:", error);
-    // }
   };
-  
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
-
     return () => clearInterval(interval);
   }, []);
-
-  // useEffect(() => {
-  //   const fetchCustomers = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const customer = await customerService.getCustomers(); 
-  //       const customersArray = Array.isArray(customer) ? customer : [customer];
-  //       const formattedData = customersArray.map((customer: any) => ({
-  //         cpf: customer.cpf,
-  //         telefone: customer.telefone,
-  //         nome: customer.nome,
-  //         saldo: customer.saldo,
-  //         endereco: customer.endereco,
-  //         pedidos: customer.pedidos || [],
-  //       }));
-  //       console.log(formattedData);
-  //       setTableData(formattedData);
-  //     } catch (err) {
-  //       setError("Erro ao carregar os clientes. Tente novamente mais tarde.");
-  //       console.error(err);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchCustomers();
-  // }, []);
-
-  // if (loading) {
-  //   return <div>Carregando...</div>;
-  // }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   return (
     <>
@@ -193,52 +115,56 @@ const App: React.FC = () => {
         <div className="date-container">{formatDateToFull(currentTime)}</div>
       </div>
       <div className="box-buttons">
-        <button className="modal-button" onClick={() => setShowOrderTable(!showOrderTable)}>
-          {showOrderTable ? "Tela Inicial" : "Histórico de Pedidos"}
-        </button>
         <button className="modal-button" onClick={() => setUserModalOpen(true)}>
-          Adicionar Cliente
+          Cadastrar Produto
         </button>
-        <button className="modal-button" onClick={() => setRemoveModalOpen(true)}>
-          Remover Cliente
-        </button>
+        <input
+          type="text"
+          placeholder="Buscar produto por nome ou ID"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-input"
+        />
       </div>
 
-      {!showOrderTable 
-        ? <Table title="Gestão de assinaturas" columns={columns} data={tableData}
-          detailPanel={customerDetail}/>
-        : <OrderPage />
-      }
-      
+      <Table title="Gestão de Produtos" columns={columns} data={filteredTableData} />
+
       <footer className="footer">&copy; 2024 Pinheirinho Restaurant</footer>
 
-      {/* Modal para Adicionar Cliente */}
+      {/* Modal para Adicionar Produto */}
       <Modal
         isOpen={userModalOpen}
         onClose={() => setUserModalOpen(false)}
-        title="Adicionar Cliente"
-        onSubmit={handleAddUser}
+        title="Cadastrar Produto"
+        onSubmit={handleAddProduct}
         variant="register"
       />
 
-      {/* Modal para Remover Cliente */}
-      <Modal
-        isOpen={removeModalOpen}
-        onClose={() => setRemoveModalOpen(false)}
-        title="Remover Cliente"
-        onSubmit={handleRemoveUser}
-        variant="remove"
-      />
-
-      {/* Modal para ações da tabela */}
+      {/* Modal para Alterar ou Remover Produto */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={modalConfig.title}
-        onSubmit={handleSubmit} 
+        onSubmit={
+          modalConfig.action === 'update'
+            ? handleUpdateProduct
+            : () => handleRemoveProduct(selectedProduct?.id ?? '')
+        }
+        product={selectedProduct}
       />
+
+      {/* Modal de Confirmação para Remover Produto */}
+      <Modal
+        isOpen={removeModalOpen}
+        onClose={() => setRemoveModalOpen(false)}
+        title="Confirmar Remoção"
+        onSubmit={confirmRemoveProduct}
+        variant="remove"
+      >
+        <div>Tem certeza de que deseja remover o produto {selectedProduct?.nome}?</div>
+      </Modal>
     </>
   );
 };
 
-export default App;
+export default ProductPage;
