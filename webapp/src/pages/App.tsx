@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Table from '../components/table';
 import CustomerService from '../services/customerService';
+import { customerMock } from '../services/customerService';
 import './App.css';
 import Modal from '../components/modal';
 import CurrencyFormatter from '../utils/currencyFormatter';
@@ -18,7 +19,7 @@ const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({ title: '', action: '' });
   const [selectedRow, setSelectedRow] = useState<Customer | null>(null);
-  const [tableData, setTableData] = useState<Customer[]>([]);
+  const [tableData, setTableData] = useState<Customer[]>(customerMock);
 
   const [loading, setLoading] = useState<boolean>(true); 
   const [error, setError] = useState<string | null>(null);
@@ -100,39 +101,45 @@ const App: React.FC = () => {
       setTableData(updatedData);
       setIsModalOpen(false);
 
-      try {
-        const updatedCustomer = updatedData.find((row) => row.nome === selectedRow.nome);
-        if (updatedCustomer) {
-          await customerService.updateCustomer(updatedCustomer);
-        }
-      } catch (error) {
-        alert("Erro ao atualizar o cliente no backend");
-      }
+      // try {
+      //   const updatedCustomer = updatedData.find((row) => row.nome === selectedRow.nome);
+      //   if (updatedCustomer) {
+      //     await customerService.updateCustomer(updatedCustomer);
+      //   }
+      // } catch (error) {
+      //   alert("Erro ao atualizar o cliente no backend");
+      // }
     }
   };
 
   const customerService = new CustomerService();
 
   const handleAddUser = async (data: Customer) => {
-    try {
-      await customerService.addCustomer(data);
-      setTableData((prevData) => [...prevData, data])
-      setUserModalOpen(false);
-    } catch (error) {
-      console.error("Erro ao adicionar cliente:", error);
-    }
+    setTableData((prevData) => [...prevData, data])
+    setUserModalOpen(false);
+    // try {
+    //   await customerService.addCustomer(data);
+    //   setTableData((prevData) => [...prevData, data])
+    //   setUserModalOpen(false);
+    // } catch (error) {
+    //   console.error("Erro ao adicionar cliente:", error);
+    // }
   };
 
   const handleRemoveUser = async (data: { cpf: string }) => {
-    try {
-      await customerService.removeCustomer(data.cpf);
-      setTableData((prevData) =>
-        prevData.filter((cliente) => cliente.cpf !== data.cpf)
-      );
-      setRemoveModalOpen(false);
-    } catch (error) {
-      console.error("Erro ao remover cliente:", error);
-    }
+    setTableData((prevData) =>
+      prevData.filter((cliente) => cliente.cpf !== data.cpf)
+    );
+    setRemoveModalOpen(false);
+    // try {
+    //   await customerService.removeCustomer(data.cpf);
+    //   setTableData((prevData) =>
+    //     prevData.filter((cliente) => cliente.cpf !== data.cpf)
+    //   );
+    //   setRemoveModalOpen(false);
+    // } catch (error) {
+    //   console.error("Erro ao remover cliente:", error);
+    // }
   };
   
 
@@ -144,36 +151,36 @@ const App: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        setLoading(true);
-        const customer = await customerService.getCustomers(); 
-        const customersArray = Array.isArray(customer) ? customer : [customer];
-        const formattedData = customersArray.map((customer: any) => ({
-          cpf: customer.cpf,
-          telefone: customer.telefone,
-          nome: customer.nome,
-          saldo: customer.saldo,
-          endereco: customer.endereco,
-          pedidos: customer.pedidos || [],
-        }));
-        console.log(formattedData);
-        setTableData(formattedData);
-      } catch (err) {
-        setError("Erro ao carregar os clientes. Tente novamente mais tarde.");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchCustomers = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const customer = await customerService.getCustomers(); 
+  //       const customersArray = Array.isArray(customer) ? customer : [customer];
+  //       const formattedData = customersArray.map((customer: any) => ({
+  //         cpf: customer.cpf,
+  //         telefone: customer.telefone,
+  //         nome: customer.nome,
+  //         saldo: customer.saldo,
+  //         endereco: customer.endereco,
+  //         pedidos: customer.pedidos || [],
+  //       }));
+  //       console.log(formattedData);
+  //       setTableData(formattedData);
+  //     } catch (err) {
+  //       setError("Erro ao carregar os clientes. Tente novamente mais tarde.");
+  //       console.error(err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchCustomers();
-  }, []);
+  //   fetchCustomers();
+  // }, []);
 
-  if (loading) {
-    return <div>Carregando...</div>;
-  }
+  // if (loading) {
+  //   return <div>Carregando...</div>;
+  // }
 
   if (error) {
     return <div>{error}</div>;
