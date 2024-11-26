@@ -50,17 +50,50 @@ export class PedidoRepository implements IPedidoRepository {
     }
 
 
-    listarTodosPedidos(): Promise<Pedido[]> {
-        throw new Error("Method not implemented.");
+    async listarTodosPedidos(): Promise<PedidoORM[]> {
+        console.log("Listando pedidos...");
+        return this.pedidoRepository.find();
     }
-    consultarPedidosPorCliente(clienteCpf: string): Promise<Pedido[]> {
-        throw new Error("Method not implemented.");
+
+
+    async consultarPedidosPorCliente(clienteCpf: string): Promise<PedidoORM[]> {
+        console.log("Buscando pedido por CPF...");
+
+        const cliente = await this.clienteRepository.findOne({ where: { cpf: clienteCpf }});
+        if(!cliente) {
+            throw new Error("Cliente não encontrado.")
+        }
+
+        return this.pedidoRepository.findBy({ cliente });
     }
-    consultarPedidoPorId(pedidoId: number): Promise<Pedido | null> {
-        throw new Error("Method not implemented.");
+
+    async consultarPedidoPorId(pedidoId: number): Promise<PedidoORM> {
+        console.log("Buscando pedido por id...");
+
+        const pedido = await this.pedidoRepository.findOneBy({ id: pedidoId });
+
+        if(!pedido) {
+            throw new Error("Pedido não encontrado.");
+        }
+
+        if(pedido.cliente && typeof pedido.cliente.saldo === 'string') {
+            pedido.cliente.saldo = parseFloat(pedido.cliente.saldo);
+        }
+
+        return pedido;
     }
-    removerPedido(pedidoId: string): Promise<void> {
-        throw new Error("Method not implemented.");
+
+    async removerPedido(pedidoId: number): Promise<void> {
+        console.log("Removendo pedido...");
+
+        const pedido =  await this.pedidoRepository.findOneBy({ id: pedidoId });
+
+        if (!pedido) {
+            throw new Error("Pedido não encontrado.")
+        }
+
+        await this.pedidoRepository.remove(pedido);
+        console.log(`Pedido removido: ${pedido}`);
     }
     
     // private ormRepository: Repository<Pedido>;

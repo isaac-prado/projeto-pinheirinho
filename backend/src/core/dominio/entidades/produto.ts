@@ -5,14 +5,14 @@ export default class Produto {
     nome: string;
     estoque: number;
     preco: number;
-    pedidos: PedidoORM[];
+    pedidos: PedidoORM[] = [];
 
     constructor(
         id: number,
         nome: string,
         estoque: number,
         preco: number,
-        pedidos: PedidoORM[]
+        pedidos: PedidoORM[] = []
     ){
         this.id = id;
         this.nome = nome;

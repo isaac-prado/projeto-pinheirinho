@@ -19,7 +19,8 @@ export class AdicionarPedido implements IAdicionarPedido {
 
         const cliente = ClienteMapper.toDomain(clienteOrm); 
 
-        if (cliente.saldo < pedido.valor) {
+        const valorPedido = Number(pedido.valor.toFixed(2));
+        if (cliente.saldo < valorPedido) {
             throw new Error("Saldo Insuficiente.");
         }
 
