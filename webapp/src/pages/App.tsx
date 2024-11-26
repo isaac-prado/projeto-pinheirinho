@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Table from '../components/table';
 import Modal from '../components/modal';
-import Product from '../domain/product';
+import Product from './product';
 import CurrencyFormatter from '../utils/currencyFormatter';
 import { formatDateToFull } from '../utils/dateFormatter';
+import { AttachMoney, Delete, AddCircleOutline } from '@material-ui/icons';
 import './ProductPage.css';
 
 const ProductPage: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalConfig, setModalConfig] = useState({ title: '', action: '' });
+  const [modalType, setModalType] = useState<null | 'register' | 'update' | 'confirmRemove' | 'updatePrice' | 'addProduct'>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [tableData, setTableData] = useState<Product[]>([]);
-  const [userModalOpen, setUserModalOpen] = useState(false);
-  const [removeModalOpen, setRemoveModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [newProduct, setNewProduct] = useState({ nome: '', quantidade: 0, preco: 0.0 });
 
   const initialData: Product[] = [
     { id: '1', nome: 'Produto 1', quantidade: 10, preco: 25.0 },
@@ -24,6 +23,13 @@ const ProductPage: React.FC = () => {
 
   useEffect(() => {
     setTableData(initialData);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const filteredTableData = tableData.filter((product) =>
@@ -44,50 +50,74 @@ const ProductPage: React.FC = () => {
       field: 'actions',
       render: (rowData: Product) => (
         <div className="action-icons">
-          <button onClick={() => handleOpenModal(rowData, 'update')}>Alterar</button>
-          <button onClick={() => handleOpenModal(rowData, 'remove')}>Remover</button>
+          <AddCircleOutline className="action-icon" onClick={() => handleOpenModal('addProduct', rowData)} />
+          <AttachMoney className="action-icon" onClick={() => handleOpenModal('updatePrice', rowData)} />
+          <Delete className="action-icon" onClick={() => handleOpenModal('confirmRemove', rowData)} />
         </div>
       ),
     },
   ];
 
-  const handleOpenModal = (rowData: Product, action: string) => {
-    setSelectedProduct(rowData);
-    setModalConfig({
-      title: action === 'update' ? 'Alterar Produto' : 'Remover Produto',
-      action,
-    });
-    setIsModalOpen(true);
+  const handleOpenModal = (type: 'register' | 'update' | 'confirmRemove' | 'updatePrice' | 'addProduct', product: Product | null = null) => {
+    setSelectedProduct(product);
+    setModalType(type);
+    if (type === 'register') {
+      // Reset new product form
+      setNewProduct({ nome: '', quantidade: 0, preco: 0.0 });
+    } else if (type === 'update' && product) {
+      // Populate form fields with the selected product data
+      setNewProduct({ nome: product.nome, quantidade: product.quantidade, preco: product.preco });
+    }
   };
 
-  const handleAddProduct = (product: Product) => {
-    setTableData((prevData) => [...prevData, product]);
-    setUserModalOpen(false);
+  const handleAddProduct = () => {
+    const newProductData = {
+      id: String(tableData.length + 1),
+      ...newProduct,
+    };
+    setTableData((prevData) => [...prevData, newProductData]);
+    setModalType(null);
+    setNewProduct({ nome: '', quantidade: 0, preco: 0.0 });
   };
 
   const handleUpdateProduct = (updatedProduct: Product) => {
     setTableData((prevData) =>
       prevData.map((product) =>
-        product.id === updatedProduct.id ? { ...product, quantidade: updatedProduct.quantidade, preco: updatedProduct.preco } : product
+        product.id === updatedProduct.id ? { ...product, ...updatedProduct } : product
       )
     );
-    setIsModalOpen(false);
+    setModalType(null);
   };
 
-  const handleRemoveProduct = (productId: string) => {
-    const productToRemove = tableData.find((product) => product.id === productId);
-    if (productToRemove && productToRemove.quantidade > 0) {
-      setRemoveModalOpen(true);
-    } else {
-      setTableData((prevData) => prevData.filter((product) => product.id !== productId));
+  const handleRemoveProduct = () => {
+    if (selectedProduct) {
+      setTableData((prevData) => prevData.filter((product) => product.id !== selectedProduct.id));
+      setSelectedProduct(null);
+      setModalType(null);
     }
   };
 
-  const confirmRemoveProduct = () => {
+  const handleUpdatePrice = (newPrice: number) => {
     if (selectedProduct) {
-      setTableData((prevData) => prevData.filter((product) => product.id !== selectedProduct.id));
-      setRemoveModalOpen(false);
-      setSelectedProduct(null);
+      setTableData((prevData) =>
+        prevData.map((product) =>
+          product.id === selectedProduct.id ? { ...product, preco: newPrice } : product
+        )
+      );
+      setModalType(null);
+    }
+  };
+
+  const handleAddQuantity = (quantity: number) => {
+    if (selectedProduct) {
+      setTableData((prevData) =>
+        prevData.map((product) =>
+          product.id === selectedProduct.id
+            ? { ...product, quantidade: product.quantidade + quantity }
+            : product
+        )
+      );
+      setModalType(null);
     }
   };
 
@@ -95,18 +125,11 @@ const ProductPage: React.FC = () => {
     setTableData((prevData) =>
       prevData.map((product) =>
         product.id === productId
-          ? { ...product, quantidade: product.quantidade > 0 ? product.quantidade - 1 : 0 }
+          ? { ...product, quantidade: Math.max(product.quantidade - 1, 0) }
           : product
       )
     );
   };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <>
@@ -115,7 +138,7 @@ const ProductPage: React.FC = () => {
         <div className="date-container">{formatDateToFull(currentTime)}</div>
       </div>
       <div className="box-buttons">
-        <button className="modal-button" onClick={() => setUserModalOpen(true)}>
+        <button className="modal-button" onClick={() => handleOpenModal('register')}>
           Cadastrar Produto
         </button>
         <input
@@ -131,34 +154,54 @@ const ProductPage: React.FC = () => {
 
       <footer className="footer">&copy; 2024 Pinheirinho Restaurant</footer>
 
-      {/* Modal para Adicionar Produto */}
+      {/* Modal para Cadastrar Produto */}
       <Modal
-        isOpen={userModalOpen}
-        onClose={() => setUserModalOpen(false)}
-        title="Cadastrar Produto"
-        onSubmit={handleAddProduct}
-        variant="register"
-      />
+        isOpen={modalType === 'register' || modalType === 'update'}
+        onClose={() => setModalType(null)}
+        title={modalType === 'register' ? 'Cadastrar Produto' : 'Alterar Produto'}
+        onSubmit={() => (modalType === 'register' ? handleAddProduct() : selectedProduct && handleUpdateProduct(selectedProduct))}
+      >
+        <input
+          type="text"
+          placeholder="Nome do Produto"
+          value={newProduct.nome}
+          onChange={(e) => setNewProduct({ ...newProduct, nome: e.target.value })}
+        />
+        <input
+          type="number"
+          placeholder="Quantidade"
+          value={newProduct.quantidade}
+          onChange={(e) => setNewProduct({ ...newProduct, quantidade: Number(e.target.value) })}
+        />
+        <input
+          type="number"
+          placeholder="Preço"
+          value={newProduct.preco}
+          onChange={(e) => setNewProduct({ ...newProduct, preco: Number(e.target.value) })}
+        />
+      </Modal>
 
-      {/* Modal para Alterar ou Remover Produto */}
+      {/* Modal para Alterar Preço */}
       <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={modalConfig.title}
-        onSubmit={
-          modalConfig.action === 'update'
-            ? handleUpdateProduct
-            : () => handleRemoveProduct(selectedProduct?.id ?? '')
-        }
-        product={selectedProduct}
-      />
+        isOpen={modalType === 'updatePrice'}
+        onClose={() => setModalType(null)}
+        title="Alterar Preço"
+        onSubmit={() => selectedProduct && handleUpdatePrice(newProduct.preco)}
+      >
+        <input
+          type="number"
+          placeholder="Novo Preço"
+          value={newProduct.preco}
+          onChange={(e) => setNewProduct({ ...newProduct, preco: Number(e.target.value) })}
+        />
+      </Modal>
 
       {/* Modal de Confirmação para Remover Produto */}
       <Modal
-        isOpen={removeModalOpen}
-        onClose={() => setRemoveModalOpen(false)}
+        isOpen={modalType === 'confirmRemove'}
+        onClose={() => setModalType(null)}
         title="Confirmar Remoção"
-        onSubmit={confirmRemoveProduct}
+        onSubmit={handleRemoveProduct}
         variant="remove"
       >
         <div>Tem certeza de que deseja remover o produto {selectedProduct?.nome}?</div>
