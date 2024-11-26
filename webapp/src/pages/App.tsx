@@ -6,9 +6,9 @@ import './App.css';
 import Modal from '../components/modal';
 import CurrencyFormatter from '../utils/currencyFormatter';
 import Customer from '../domain/customer';
-import { ArrowRightSharp, AttachMoney, ShoppingCart } from '@material-ui/icons';
+import { ArrowRightSharp, AttachMoney, ShoppingCart} from '@material-ui/icons';
 import { formatDateToFull } from '../utils/dateFormatter';
-import OrderPage from './Order/OrderPage';
+import OrderPage from '../components/productPage/OrderPage';
 
 const App: React.FC = () => {
 
