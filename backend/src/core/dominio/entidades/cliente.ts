@@ -1,9 +1,13 @@
+import Pedido from "./pedido";
+
 export default class Cliente {
+    id: number;
     nome: string;
     cpf: string;
     endereco: string;
     telefone: string;
     saldo: number;
+    pedidos?: Pedido[];
     email?: string;
 
     constructor(
@@ -12,6 +16,7 @@ export default class Cliente {
         endereco: string, 
         telefone: string, 
         saldo: number, 
+        pedidos?: Pedido[],
         email?: string
     ) {
         this.nome = nome;
@@ -19,6 +24,7 @@ export default class Cliente {
         this.endereco = endereco;
         this.telefone = telefone;
         this.saldo = saldo;
+        this.pedidos = pedidos;
         if(email) this.email = email;
     }
 

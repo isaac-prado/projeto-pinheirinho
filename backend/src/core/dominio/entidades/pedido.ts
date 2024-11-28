@@ -1,14 +1,14 @@
+import Produto from "./produto";
 import Cliente from "./cliente";
-import ProdutoORM from "../../../infra/orm/entidades/ProdutoORM";
 
 export default class Pedido {
     id: number;
     data: Date;
     valor: number;
-    produtos: ProdutoORM[];
+    produtos: Produto[];
     cliente: Cliente;
 
-    constructor(id: number, data: Date, valor: number, cliente: Cliente, produtos: ProdutoORM[]) {
+    constructor(id: number, data: Date, valor: number, cliente: Cliente, produtos: Produto[]) {
         this.id = id;
         this.data = data;
         this.valor = valor;

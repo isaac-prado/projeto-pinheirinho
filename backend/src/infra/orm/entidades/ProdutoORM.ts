@@ -27,5 +27,5 @@ export default class ProdutoORM {
             referencedColumnName: 'id'
         }
     })
-    pedidos: PedidoORM[] = [];
+    pedidos: PedidoORM[];
 }
