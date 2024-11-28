@@ -1,4 +1,5 @@
 import Cliente from "../../../dominio/entidades/cliente";
+import { PedidoMapper } from "../../../utils/PedidoMapper";
 import { IClienteRepository } from "../../contratos/iClienteRepository";
 import { IConsultarCliente } from "./interfaces/iConsultarCliente";
 
@@ -13,9 +14,15 @@ export class ConsultarCliente implements IConsultarCliente {
         if (!clienteOrm) {
             throw new Error("Cliente não encontrado.");
         }
-
-        const cliente = Cliente.fromORM(clienteOrm);
-
-        return cliente;
+    
+        return new Cliente(
+            clienteOrm.nome,
+            clienteOrm.cpf,
+            clienteOrm.endereco,
+            clienteOrm.telefone,
+            Number(clienteOrm.saldo),
+            clienteOrm.pedidos?.map(pedidoOrm => PedidoMapper.toDomain(pedidoOrm)),
+            clienteOrm.email
+        );
     }
 }

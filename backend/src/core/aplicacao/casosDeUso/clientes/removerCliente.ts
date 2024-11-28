@@ -1,6 +1,7 @@
 import { IClienteRepository } from "../../contratos/iClienteRepository";
 import { IRemoverCliente } from "./interfaces/iRemoverCliente";
 import Cliente from "../../../dominio/entidades/cliente";
+import { PedidoMapper } from "../../../utils/PedidoMapper";
 
 export class RemoverCliente implements IRemoverCliente {
     public constructor(
