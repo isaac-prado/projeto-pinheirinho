@@ -1,6 +1,7 @@
 import { IObterClientes } from "./interfaces/iObterClientes";
 import { IClienteRepository } from "../../contratos/iClienteRepository";
 import Cliente from "../../../dominio/entidades/cliente";
+import { PedidoMapper } from "../../../utils/PedidoMapper";
 
 export class ObterClientes implements IObterClientes {
   constructor(private readonly clienteRepository: IClienteRepository) {}
@@ -15,7 +16,8 @@ export class ObterClientes implements IObterClientes {
         clienteOrm.endereco,
         clienteOrm.telefone,
         Number(clienteOrm.saldo),
-        clienteOrm.email
+        clienteOrm.pedidos?.map(pedidoOrm => PedidoMapper.toDomain(pedidoOrm)),
+        clienteOrm.email,
       )
     );
 

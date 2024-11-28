@@ -1,4 +1,5 @@
 import Cliente from "../../../dominio/entidades/cliente";
+import { PedidoMapper } from "../../../utils/PedidoMapper";
 import { IClienteRepository } from "../../contratos/iClienteRepository";
 import { IConsultarCliente } from "./interfaces/iConsultarCliente";
 
@@ -20,6 +21,7 @@ export class ConsultarCliente implements IConsultarCliente {
             clienteOrm.endereco,
             clienteOrm.telefone,
             Number(clienteOrm.saldo),
+            clienteOrm.pedidos?.map(pedidoOrm => PedidoMapper.toDomain(pedidoOrm)),
             clienteOrm.email
         );
     }

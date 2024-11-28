@@ -1,3 +1,4 @@
+import PedidoORM from "../../../../infra/orm/entidades/PedidoORM";
 import Pedido from "../../../dominio/entidades/pedido";
 import { IPedidoRepository } from "../../contratos/iPedidoRepository";
 import { PedidoConsulta } from "../../models/pedidoConsulta";
@@ -9,7 +10,7 @@ export class ListarPedidos implements IListarPedidos {
         const pedidos = await this.pedidoRepository.listarTodosPedidos();
 
         const pedidosConsulta: PedidoConsulta[] = pedidos.map(
-            (pedido: Pedido) => ({
+            (pedido: PedidoORM) => ({
                 cliente: pedido.cliente.nome,
                 data: pedido.data,
                 valor: pedido.valor,
