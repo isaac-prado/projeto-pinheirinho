@@ -25,5 +25,5 @@ export default class ClienteORM {
     email?: string;
 
     @OneToMany(() => PedidoORM, pedido => pedido.cliente)
-    pedidos!: PedidoORM[];
+    pedidos?: PedidoORM[];
 }

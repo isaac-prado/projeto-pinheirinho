@@ -10,7 +10,8 @@ export class ClienteMapper {
             clienteORM.endereco,
             clienteORM.telefone,
             clienteORM.saldo,
-            clienteORM.email
+            clienteORM.pedidos?.map(pedidoORM => PedidoMapper.toDomain(pedidoORM)),
+            clienteORM.email,
         );
         return cliente;
     }
@@ -19,10 +20,11 @@ export class ClienteMapper {
         const clienteORM = new ClienteORM();
         clienteORM.nome = cliente.nome;
         clienteORM.cpf = cliente.cpf;
+        clienteORM.endereco = cliente.endereco;
         clienteORM.telefone = cliente.telefone;
         clienteORM.saldo = cliente.saldo;
+        clienteORM.pedidos = cliente.pedidos?.map(pedido => PedidoMapper.toPersistence(pedido)); 
         clienteORM.email = cliente.email;
-        clienteORM.endereco
         return clienteORM;
     }
 }
