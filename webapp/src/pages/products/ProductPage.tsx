@@ -95,34 +95,84 @@ const ProductPage: React.FC = () => {
   };
   
 
-  const handleUpdateQuantity = (updatedData: { id: string; quantidade: number }) => {
-    setTableData((prevData) => {
-      const newData = prevData.map((product) =>
-        product.id === updatedData.id
-          ? { ...product, quantidade: updatedData.quantidade }
-          : product
-      );
-      return newData;
-    });
-    setModalType(null);
-  };
-
-  const handleRemoveProduct = () => {
-    if (selectedProduct) {
-      setTableData((prevData) => prevData.filter((product) => product.id !== selectedProduct.id));
-      setSelectedProduct(null);
-      setModalType(null);
-    }
-  };
-
-  const handleUpdatePrice = (newPrice: number) => {
-    if (selectedProduct) {
+  const handleUpdateQuantity = async (updatedData: { id: string; estoque: number }) => {
+    try {
+      // Obter o produto atual
+      const currentProduct = tableData.find((product) => product.id === updatedData.id);
+      if (!currentProduct) {
+        throw new Error('Produto não encontrado');
+      }
+  
+      // Criar o objeto completo com os novos dados
+      const updatedProduct = {
+        ...currentProduct,
+        estoque: updatedData.estoque,
+      };
+  
+      // Atualizar o backend
+      await productService.updateProduct(updatedProduct);
+  
+      // Actualizar en el frontend
       setTableData((prevData) =>
         prevData.map((product) =>
-          product.id === selectedProduct.id ? { ...product, preco: newPrice } : product
+          product.id === updatedData.id ? updatedProduct : product
         )
       );
       setModalType(null);
+    } catch (error) {
+      console.error('Erro ao atualizar o estoque:', error);
+    }
+  };
+
+  const handleRemoveProduct = async () => {
+    if (!selectedProduct) return;
+  
+    try {
+      // Eliminar no backend
+      await productService.removeProduct(parseInt(selectedProduct.id, 10)); // Asegurar que o id seja um número
+  
+      // Eliminar no frontend
+      setTableData((prevData) =>
+        prevData.filter((product) => product.id !== selectedProduct.id)
+      );
+      setSelectedProduct(null);
+      setModalType(null);
+    } catch (error) {
+      console.error('Erro ao eliminar o produto:', error);
+    }
+  };
+  
+
+  const handleUpdatePrice = async (newPrice: number) => {
+    if (!selectedProduct) return;
+  
+    try {
+      // Obter o produto atual
+      const currentProduct = tableData.find(
+        (product) => product.id === selectedProduct.id
+      );
+      if (!currentProduct) {
+        throw new Error('Produto não encontrado');
+      }
+  
+      // Criar o objeto completo com os novos dados
+      const updatedProduct = {
+        ...currentProduct,
+        preco: newPrice,
+      };
+  
+      // Atualizar o backend
+      await productService.updateProduct(updatedProduct);
+  
+      // Atualizar o frontend
+      setTableData((prevData) =>
+        prevData.map((product) =>
+          product.id === selectedProduct.id ? updatedProduct : product
+        )
+      );
+      setModalType(null);
+    } catch (error) {
+      console.error('Erro ao atualizar o preço:', error);
     }
   };
 
