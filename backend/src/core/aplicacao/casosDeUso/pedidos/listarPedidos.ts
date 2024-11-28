@@ -2,6 +2,7 @@ import PedidoORM from "../../../../infra/orm/entidades/PedidoORM";
 import { IPedidoRepository } from "../../contratos/iPedidoRepository";
 import { PedidoConsulta } from "../../models/pedidoConsulta";
 import { IListarPedidos } from "./interfaces/iListarPedidos";
+import Pedido from "../../../dominio/entidades/pedido";
 
 export class ListarPedidos implements IListarPedidos {
     constructor(private readonly pedidoRepository: IPedidoRepository) {}
