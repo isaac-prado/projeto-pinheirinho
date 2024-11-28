@@ -95,6 +95,10 @@ export class PedidoRepository implements IPedidoRepository {
         await this.pedidoRepository.remove(pedido);
         console.log(`Pedido removido: ${pedido}`);
     }
+
+    async alterarPedido(pedido: Pedido): Promise<PedidoORM> {
+        return this.pedidoRepository.save(pedido);
+    }
     
     // private ormRepository: Repository<Pedido>;
 

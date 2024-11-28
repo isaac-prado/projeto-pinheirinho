@@ -3,13 +3,15 @@ import { IAdicionarPedido } from "../../core/aplicacao/casosDeUso/pedidos/interf
 import { IConsultarPedido } from "../../core/aplicacao/casosDeUso/pedidos/interfaces/iConsultarPedido";
 import { IRemoverPedido } from "../../core/aplicacao/casosDeUso/pedidos/interfaces/iRemoverPedido";
 import { IListarPedidos } from "../../core/aplicacao/casosDeUso/pedidos/interfaces/iListarPedidos";
+import { IAlterarPedido } from "../../core/aplicacao/casosDeUso/pedidos/interfaces/iAlterarPedido";
 
 export class PedidoController {
     constructor(
         private readonly criarPedido: IAdicionarPedido,
         private readonly consultarPedido: IConsultarPedido,
         private readonly removerPedido: IRemoverPedido,
-        private readonly listarPedidos: IListarPedidos
+        private readonly listarPedidos: IListarPedidos,
+        private readonly alterarPedido: IAlterarPedido
     ) {}
 
     public rotaAdicionarPedido = async (
@@ -78,6 +80,21 @@ export class PedidoController {
         try {
             const pedidos = await this.listarPedidos.executar();
             return res.status(200).json(pedidos);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send(error);
+        }
+    }
+
+    public rotaAlterarPedido = async (
+        req: express.Request,
+        res: express.Response
+    ) => {
+        try {
+            const pedidoId = parseInt(req.params.id);
+            const pedidoData = req.body;
+            const pedidoAtualizado = await this.alterarPedido.executar(pedidoId, pedidoData)
+            return res.status(200).json(pedidoAtualizado);
         } catch (error) {
             console.error(error);
             return res.status(500).send(error);
