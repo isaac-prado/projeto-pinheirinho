@@ -18,7 +18,7 @@ export default class ClienteORM {
     @Column()
     telefone!: string;
 
-    @Column("decimal", { precision: 10, scale: 2 })
+    @Column({ type: 'decimal', precision: 10, scale: 2 })
     saldo!: number;
 
     @Column({ nullable: true })

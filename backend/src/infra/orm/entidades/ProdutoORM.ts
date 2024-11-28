@@ -1,20 +1,31 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
 import PedidoORM from "./PedidoORM";
 
-@Entity("produto")
+@Entity('produtos')
 export default class ProdutoORM {
     @PrimaryGeneratedColumn()
-    id!: number;
+    id: number;
 
     @Column()
-    nome!: string;
+    nome: string;
 
     @Column()
-    estoque!: number;
+    estoque: number;
 
-    @Column("decimal", { precision: 10, scale: 2 })
-    preco!: number;
+    @Column('decimal', { precision: 10, scale: 2 })
+    preco: number;
 
-    @ManyToMany(() => PedidoORM, pedido => pedido.produtos)
-    pedidos!: PedidoORM[];
+    @ManyToMany(() => PedidoORM)
+    @JoinTable({
+        name: 'produto_pedido',
+        joinColumn: {
+            name: 'produto_id',
+            referencedColumnName: 'id'
+        },
+        inverseJoinColumn: {
+            name: 'pedido_id',
+            referencedColumnName: 'id'
+        }
+    })
+    pedidos: PedidoORM[] = [];
 }

@@ -20,7 +20,7 @@ export class ClienteController {
         req: express.Request,
         res: express.Response
     ) => {
-        var { cpf, valor } = req.body;
+        const { cpf, valor } = req.body;
         await this.adicionarSaldo.executar(cpf, valor);
         res.send("Saldo adicionado com sucesso");
     };

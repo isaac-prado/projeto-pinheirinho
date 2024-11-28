@@ -1,8 +1,9 @@
 import Customer from "./customer";
 
 export default interface Order {
-    cod: string, 
-    date: string, 
-    name: string,
+    id: number,
+    data: Date, 
+    valor: number, 
+    produtos: Produtos[],
     totalAmount: number
 }

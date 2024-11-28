@@ -17,6 +17,12 @@ export class ClienteRepository implements IClienteRepository {
       throw new Error(`Cliente com ID ${cliente.id} não encontrado`);
     }
 
+    if(typeof cliente.saldo === 'string') {
+      cliente.saldo = parseFloat(cliente.saldo)
+    }
+
+    cliente.saldo = Number(cliente.saldo.toFixed(2));
+
     clienteExistente.nome = cliente.nome;
     clienteExistente.cpf = cliente.cpf;
     clienteExistente.telefone = cliente.telefone;

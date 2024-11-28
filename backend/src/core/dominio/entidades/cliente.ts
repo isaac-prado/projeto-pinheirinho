@@ -1,4 +1,3 @@
-import Pedido from "./pedido";
 export default class Cliente {
     nome: string;
     cpf: string;

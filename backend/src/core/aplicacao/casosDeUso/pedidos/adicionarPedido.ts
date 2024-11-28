@@ -1,6 +1,5 @@
 import Pedido from "../../../dominio/entidades/pedido";
-import Cliente from "../../../dominio/entidades/cliente";
-import ClienteORM from "../../../../infra/orm/entidades/ClienteORM";
+
 import { IClienteRepository } from "../../contratos/iClienteRepository";
 import { IPedidoRepository } from "../../contratos/iPedidoRepository";
 import { IAdicionarPedido } from "./interfaces/iAdicionarPedido";
@@ -20,7 +19,8 @@ export class AdicionarPedido implements IAdicionarPedido {
 
         const cliente = ClienteMapper.toDomain(clienteOrm); 
 
-        if (cliente.saldo < pedido.valor) {
+        const valorPedido = Number(pedido.valor.toFixed(2));
+        if (cliente.saldo < valorPedido) {
             throw new Error("Saldo Insuficiente.");
         }
 
@@ -29,7 +29,7 @@ export class AdicionarPedido implements IAdicionarPedido {
 
         pedido.cliente = cliente; 
 
-        await this.pedidoRepository.adicionarPedido(pedido);
+        await this.pedidoRepository.adicionarPedido(cpf, pedido);
 
         clienteOrm.saldo = cliente.saldo;
         await this.clienteRepository.alterarCliente(clienteOrm);
