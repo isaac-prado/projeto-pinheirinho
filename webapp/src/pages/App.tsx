@@ -9,6 +9,7 @@ import Customer from '../domain/customer';
 import { ArrowRightSharp, AttachMoney, ShoppingCart } from '@material-ui/icons';
 import { formatDateToFull } from '../utils/dateFormatter';
 import OrderPage from './Order/OrderPage';
+import ProductPage from './products/ProductPage';
 
 const App: React.FC = () => {
 
@@ -25,6 +26,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   
   const [showOrderTable, setShowOrderTable] = useState<boolean>(false);
+  const [showProductPage, setShowProductPage] = useState(false);
 
   const columns = [
     { title: 'Nome', field: 'nome' },
@@ -101,14 +103,14 @@ const App: React.FC = () => {
       setTableData(updatedData);
       setIsModalOpen(false);
 
-      // try {
-      //   const updatedCustomer = updatedData.find((row) => row.nome === selectedRow.nome);
-      //   if (updatedCustomer) {
-      //     await customerService.updateCustomer(updatedCustomer);
-      //   }
-      // } catch (error) {
-      //   alert("Erro ao atualizar o cliente no backend");
-      // }
+      try {
+        const updatedCustomer = updatedData.find((row) => row.nome === selectedRow.nome);
+        if (updatedCustomer) {
+          await customerService.updateCustomer(updatedCustomer);
+        }
+      } catch (error) {
+        alert("Erro ao atualizar o cliente no backend");
+      }
     }
   };
 
@@ -117,13 +119,13 @@ const App: React.FC = () => {
   const handleAddUser = async (data: Customer) => {
     setTableData((prevData) => [...prevData, data])
     setUserModalOpen(false);
-    // try {
-    //   await customerService.addCustomer(data);
-    //   setTableData((prevData) => [...prevData, data])
-    //   setUserModalOpen(false);
-    // } catch (error) {
-    //   console.error("Erro ao adicionar cliente:", error);
-    // }
+    try {
+      await customerService.addCustomer(data);
+      setTableData((prevData) => [...prevData, data])
+      setUserModalOpen(false);
+    } catch (error) {
+      console.error("Erro ao adicionar cliente:", error);
+    }
   };
 
   const handleRemoveUser = async (data: { cpf: string }) => {
@@ -131,15 +133,15 @@ const App: React.FC = () => {
       prevData.filter((cliente) => cliente.cpf !== data.cpf)
     );
     setRemoveModalOpen(false);
-    // try {
-    //   await customerService.removeCustomer(data.cpf);
-    //   setTableData((prevData) =>
-    //     prevData.filter((cliente) => cliente.cpf !== data.cpf)
-    //   );
-    //   setRemoveModalOpen(false);
-    // } catch (error) {
-    //   console.error("Erro ao remover cliente:", error);
-    // }
+    try {
+      await customerService.removeCustomer(data.cpf);
+      setTableData((prevData) =>
+        prevData.filter((cliente) => cliente.cpf !== data.cpf)
+      );
+      setRemoveModalOpen(false);
+    } catch (error) {
+      console.error("Erro ao remover cliente:", error);
+    }
   };
   
 
@@ -151,36 +153,36 @@ const App: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // useEffect(() => {
-  //   const fetchCustomers = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const customer = await customerService.getCustomers(); 
-  //       const customersArray = Array.isArray(customer) ? customer : [customer];
-  //       const formattedData = customersArray.map((customer: any) => ({
-  //         cpf: customer.cpf,
-  //         telefone: customer.telefone,
-  //         nome: customer.nome,
-  //         saldo: customer.saldo,
-  //         endereco: customer.endereco,
-  //         pedidos: customer.pedidos || [],
-  //       }));
-  //       console.log(formattedData);
-  //       setTableData(formattedData);
-  //     } catch (err) {
-  //       setError("Erro ao carregar os clientes. Tente novamente mais tarde.");
-  //       console.error(err);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        setLoading(true);
+        const customer = await customerService.getCustomers(); 
+        const customersArray = Array.isArray(customer) ? customer : [customer];
+        const formattedData = customersArray.map((customer: any) => ({
+          cpf: customer.cpf,
+          telefone: customer.telefone,
+          nome: customer.nome,
+          saldo: customer.saldo,
+          endereco: customer.endereco,
+          pedidos: customer.pedidos || [],
+        }));
+        console.log(formattedData);
+        setTableData(formattedData);
+      } catch (err) {
+        setError("Erro ao carregar os clientes. Tente novamente mais tarde.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   fetchCustomers();
-  // }, []);
+    fetchCustomers();
+  }, []);
 
-  // if (loading) {
-  //   return <div>Carregando...</div>;
-  // }
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
 
   if (error) {
     return <div>{error}</div>;
@@ -196,6 +198,9 @@ const App: React.FC = () => {
         <button className="modal-button" onClick={() => setShowOrderTable(!showOrderTable)}>
           {showOrderTable ? "Tela Inicial" : "Histórico de Pedidos"}
         </button>
+        <button className="modal-button" onClick={() => setShowProductPage(!showProductPage)}>
+          {showProductPage ? "Tela Inicial" : "Ver Produtos"}
+        </button>
         <button className="modal-button" onClick={() => setUserModalOpen(true)}>
           Adicionar Cliente
         </button>
@@ -204,11 +209,15 @@ const App: React.FC = () => {
         </button>
       </div>
 
-      {!showOrderTable 
-        ? <Table title="Gestão de assinaturas" columns={columns} data={tableData}
-          detailPanel={customerDetail}/>
-        : <OrderPage />
-      }
+      {!showOrderTable && !showProductPage ? (
+        <Table title="Gestão de assinaturas" columns={columns} data={tableData} detailPanel={customerDetail} />
+      ) : showProductPage ? (
+        <ProductPage />
+      ) : (
+        <OrderPage />
+      )}
+
+
       
       <footer className="footer">&copy; 2024 Pinheirinho Restaurant</footer>
 

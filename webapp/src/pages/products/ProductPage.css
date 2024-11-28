@@ -1,0 +1,129 @@
+/* Estilos do header */
+.header {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    padding-top: 30px;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  
+  .date-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    font-weight: bold;
+    color: #0d3530;
+  }
+  
+  .logo {
+    width: 160px;
+    height: auto;
+    margin: 0 auto;
+  }
+  
+  /* Botões de ação */
+  .modal-button {
+    background-color: #0d3530;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+  
+  .modal-button:hover {
+    background-color: #084c3c;
+  }
+  
+  .box-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 25px;
+  }
+  
+  /* Estilos específicos para a tabela de produtos */
+  .product-table {
+    width: 90%;
+    margin: 0 auto;
+    border-collapse: collapse;
+  }
+  
+  .product-table th, .product-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .product-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .product-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .product-table tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Ícones de ação para a tabela de produtos */
+  .action-icons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .action-icon {
+    cursor: pointer;
+    color: #0d3530;
+    transition: color 0.3s;
+  }
+  
+  .action-icon:hover {
+    color: #084c3c;
+  }
+  
+  /* Footer */
+  .footer {
+    background-color: #0d3530;
+    color: white;
+    text-align: center;
+    padding: 50px 0;
+    margin-top: 70px;
+  }
+  
+  /* Estilos do modal */
+  .modal {
+    /* Reutilizar ou adicionar estilos específicos para modais na página de produtos */
+  }
+  
+  /* Detalhes do produto */
+  #productDetail {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  #productDetail th, #productDetail td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+  }
+  
+  #productDetail th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  #productDetail tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  #productDetail tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  
