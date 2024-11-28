@@ -1,135 +1,192 @@
 import React, { useState, useEffect } from 'react';
 import Table from '../components/table';
+import CustomerService from '../services/customerService';
+import { customerMock } from '../services/customerService';
+import './App.css';
 import Modal from '../components/modal';
-import Product from './product';
 import CurrencyFormatter from '../utils/currencyFormatter';
+import Customer from '../domain/customer';
+import { ArrowRightSharp, AttachMoney, ShoppingCart } from '@material-ui/icons';
 import { formatDateToFull } from '../utils/dateFormatter';
-import { AttachMoney, Delete, AddCircleOutline } from '@material-ui/icons';
-import './ProductPage.css';
+import OrderPage from './Order/OrderPage';
+import ProductPage from './products/ProductPage';
 
-const ProductPage: React.FC = () => {
+const App: React.FC = () => {
+
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [modalType, setModalType] = useState<null | 'register' | 'update' | 'confirmRemove' | 'updatePrice' | 'addProduct'>(null);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [tableData, setTableData] = useState<Product[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [newProduct, setNewProduct] = useState({ nome: '', quantidade: 0, preco: 0.0 });
+  const [userModalOpen, setUserModalOpen] = useState(false);
+  const [removeModalOpen, setRemoveModalOpen] = useState(false);
 
-  const initialData: Product[] = [
-    { id: '1', nome: 'Produto 1', quantidade: 10, preco: 25.0 },
-    { id: '2', nome: 'Produto 2', quantidade: 20, preco: 50.0 },
-    { id: '3', nome: 'Produto 3', quantidade: 0, preco: 15.0 },
-  ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalConfig, setModalConfig] = useState({ title: '', action: '' });
+  const [selectedRow, setSelectedRow] = useState<Customer | null>(null);
+  const [tableData, setTableData] = useState<Customer[]>(customerMock);
 
-  useEffect(() => {
-    setTableData(initialData);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const filteredTableData = tableData.filter((product) =>
-    product.nome.toLowerCase().includes(searchQuery.toLowerCase()) || product.id.includes(searchQuery)
-  );
+  const [loading, setLoading] = useState<boolean>(true); 
+  const [error, setError] = useState<string | null>(null);
+  
+  const [showOrderTable, setShowOrderTable] = useState<boolean>(false);
+  const [showProductPage, setShowProductPage] = useState(false);
 
   const columns = [
     { title: 'Nome', field: 'nome' },
-    { title: 'ID', field: 'id' },
-    { title: 'Quantidade em Estoque', field: 'quantidade' },
-    {
-      title: 'Preço',
-      field: 'preco',
-      render: (rowData: Product) => CurrencyFormatter.formatToBRL(rowData.preco ?? 0),
-    },
+    { title: 'Crédito', field: 'saldo', 
+      render: (rowData: Customer) => CurrencyFormatter.formatToBRL(rowData.saldo ?? 0) },
     {
       title: 'Ações',
       field: 'actions',
-      render: (rowData: Product) => (
+      render: (rowData: Customer) => (
         <div className="action-icons">
-          <AddCircleOutline className="action-icon" onClick={() => handleOpenModal('addProduct', rowData)} />
-          <AttachMoney className="action-icon" onClick={() => handleOpenModal('updatePrice', rowData)} />
-          <Delete className="action-icon" onClick={() => handleOpenModal('confirmRemove', rowData)} />
+          <AttachMoney className="action-icon" name = "icon dinheiro"  onClick={() => handleOpenModal(rowData, 'updateCredit')} />
+          <ShoppingCart className="action-icon" onClick={() => handleOpenModal(rowData, 'addOrder')} />
         </div>
       ),
     },
   ];
 
-  const handleOpenModal = (type: 'register' | 'update' | 'confirmRemove' | 'updatePrice' | 'addProduct', product: Product | null = null) => {
-    setSelectedProduct(product);
-    setModalType(type);
-    if (type === 'register') {
-      // Reset new product form
-      setNewProduct({ nome: '', quantidade: 0, preco: 0.0 });
-    } else if (type === 'update' && product) {
-      // Populate form fields with the selected product data
-      setNewProduct({ nome: product.nome, quantidade: product.quantidade, preco: product.preco });
+  const customerDetail: any = [
+    {
+      icon: React.forwardRef((_) => <ArrowRightSharp/>),
+      tooltip: 'Ver detalhes',
+      render: (rowData: Customer) => {
+        return (
+          <div
+            style={{
+              backgroundColor: '#f9f9f6',
+            }}
+          >
+            <table id="customerDetail">
+              <thead>
+                <tr>
+                  <th>Telefone</th>
+                  <th>Email</th>
+                  <th>CPF</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{rowData.telefone}</td>
+                  <td>{rowData.email ?? '-'}</td>
+                  <td>{rowData.cpf}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )
+      },
+    },
+  ]
+
+  const handleOpenModal = (rowData: Customer, action: string) => {
+    setSelectedRow(rowData);
+    setModalConfig({
+      title: action === 'updateCredit' ? 'Adicionar crédito' : 'Adicionar pedido',
+      action,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async(value: number) => {
+    if (selectedRow) {
+      const updatedData = tableData.map((row) => {
+        if (row.nome === selectedRow.nome) { //debit? 
+          if (modalConfig.action !== 'updateCredit' && row.saldo < value) {
+            alert('Saldo insuficiente');
+            return row;
+          }
+          return modalConfig.action === 'updateCredit'
+            ? { ...row, saldo: row.saldo + value }
+            : { ...row, saldo: row.saldo - value };
+        }
+        return row;
+      });
+      setTableData(updatedData);
+      setIsModalOpen(false);
+
+      try {
+        const updatedCustomer = updatedData.find((row) => row.nome === selectedRow.nome);
+        if (updatedCustomer) {
+          await customerService.updateCustomer(updatedCustomer);
+        }
+      } catch (error) {
+        alert("Erro ao atualizar o cliente no backend");
+      }
     }
   };
 
-  const handleAddProduct = () => {
-    const newProductData = {
-      id: String(tableData.length + 1),
-      ...newProduct,
+  const customerService = new CustomerService();
+
+  const handleAddUser = async (data: Customer) => {
+    setTableData((prevData) => [...prevData, data])
+    setUserModalOpen(false);
+    try {
+      await customerService.addCustomer(data);
+      setTableData((prevData) => [...prevData, data])
+      setUserModalOpen(false);
+    } catch (error) {
+      console.error("Erro ao adicionar cliente:", error);
+    }
+  };
+
+  const handleRemoveUser = async (data: { cpf: string }) => {
+    setTableData((prevData) =>
+      prevData.filter((cliente) => cliente.cpf !== data.cpf)
+    );
+    setRemoveModalOpen(false);
+    try {
+      await customerService.removeCustomer(data.cpf);
+      setTableData((prevData) =>
+        prevData.filter((cliente) => cliente.cpf !== data.cpf)
+      );
+      setRemoveModalOpen(false);
+    } catch (error) {
+      console.error("Erro ao remover cliente:", error);
+    }
+  };
+  
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        setLoading(true);
+        const customer = await customerService.getCustomers(); 
+        const customersArray = Array.isArray(customer) ? customer : [customer];
+        const formattedData = customersArray.map((customer: any) => ({
+          cpf: customer.cpf,
+          telefone: customer.telefone,
+          nome: customer.nome,
+          saldo: customer.saldo,
+          endereco: customer.endereco,
+          pedidos: customer.pedidos || [],
+        }));
+        console.log(formattedData);
+        setTableData(formattedData);
+      } catch (err) {
+        setError("Erro ao carregar os clientes. Tente novamente mais tarde.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     };
-    setTableData((prevData) => [...prevData, newProductData]);
-    setModalType(null);
-    setNewProduct({ nome: '', quantidade: 0, preco: 0.0 });
-  };
 
-  const handleUpdateProduct = (updatedProduct: Product) => {
-    setTableData((prevData) =>
-      prevData.map((product) =>
-        product.id === updatedProduct.id ? { ...product, ...updatedProduct } : product
-      )
-    );
-    setModalType(null);
-  };
+    fetchCustomers();
+  }, []);
 
-  const handleRemoveProduct = () => {
-    if (selectedProduct) {
-      setTableData((prevData) => prevData.filter((product) => product.id !== selectedProduct.id));
-      setSelectedProduct(null);
-      setModalType(null);
-    }
-  };
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
 
-  const handleUpdatePrice = (newPrice: number) => {
-    if (selectedProduct) {
-      setTableData((prevData) =>
-        prevData.map((product) =>
-          product.id === selectedProduct.id ? { ...product, preco: newPrice } : product
-        )
-      );
-      setModalType(null);
-    }
-  };
-
-  const handleAddQuantity = (quantity: number) => {
-    if (selectedProduct) {
-      setTableData((prevData) =>
-        prevData.map((product) =>
-          product.id === selectedProduct.id
-            ? { ...product, quantidade: product.quantidade + quantity }
-            : product
-        )
-      );
-      setModalType(null);
-    }
-  };
-
-  const handleReduceQuantity = (productId: string) => {
-    setTableData((prevData) =>
-      prevData.map((product) =>
-        product.id === productId
-          ? { ...product, quantidade: Math.max(product.quantidade - 1, 0) }
-          : product
-      )
-    );
-  };
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <>
@@ -138,76 +195,59 @@ const ProductPage: React.FC = () => {
         <div className="date-container">{formatDateToFull(currentTime)}</div>
       </div>
       <div className="box-buttons">
-        <button className="modal-button" onClick={() => handleOpenModal('register')}>
-          Cadastrar Produto
+        <button className="modal-button" onClick={() => setShowOrderTable(!showOrderTable)}>
+          {showOrderTable ? "Tela Inicial" : "Histórico de Pedidos"}
         </button>
-        <input
-          type="text"
-          placeholder="Buscar produto por nome ou ID"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-input"
-        />
+        <button className="modal-button" onClick={() => setShowProductPage(!showProductPage)}>
+          {showProductPage ? "Tela Inicial" : "Ver Produtos"}
+        </button>
+        <button className="modal-button" onClick={() => setUserModalOpen(true)}>
+          Adicionar Cliente
+        </button>
+        <button className="modal-button" onClick={() => setRemoveModalOpen(true)}>
+          Remover Cliente
+        </button>
       </div>
 
-      <Table title="Gestão de Produtos" columns={columns} data={filteredTableData} />
+      {!showOrderTable && !showProductPage ? (
+        <Table title="Gestão de assinaturas" columns={columns} data={tableData} detailPanel={customerDetail} />
+      ) : showProductPage ? (
+        <ProductPage />
+      ) : (
+        <OrderPage />
+      )}
 
+
+      
       <footer className="footer">&copy; 2024 Pinheirinho Restaurant</footer>
 
-      {/* Modal para Cadastrar Produto */}
+      {/* Modal para Adicionar Cliente */}
       <Modal
-        isOpen={modalType === 'register' || modalType === 'update'}
-        onClose={() => setModalType(null)}
-        title={modalType === 'register' ? 'Cadastrar Produto' : 'Alterar Produto'}
-        onSubmit={() => (modalType === 'register' ? handleAddProduct() : selectedProduct && handleUpdateProduct(selectedProduct))}
-      >
-        <input
-          type="text"
-          placeholder="Nome do Produto"
-          value={newProduct.nome}
-          onChange={(e) => setNewProduct({ ...newProduct, nome: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Quantidade"
-          value={newProduct.quantidade}
-          onChange={(e) => setNewProduct({ ...newProduct, quantidade: Number(e.target.value) })}
-        />
-        <input
-          type="number"
-          placeholder="Preço"
-          value={newProduct.preco}
-          onChange={(e) => setNewProduct({ ...newProduct, preco: Number(e.target.value) })}
-        />
-      </Modal>
+        isOpen={userModalOpen}
+        onClose={() => setUserModalOpen(false)}
+        title="Adicionar Cliente"
+        onSubmit={handleAddUser}
+        variant="register"
+      />
 
-      {/* Modal para Alterar Preço */}
+      {/* Modal para Remover Cliente */}
       <Modal
-        isOpen={modalType === 'updatePrice'}
-        onClose={() => setModalType(null)}
-        title="Alterar Preço"
-        onSubmit={() => selectedProduct && handleUpdatePrice(newProduct.preco)}
-      >
-        <input
-          type="number"
-          placeholder="Novo Preço"
-          value={newProduct.preco}
-          onChange={(e) => setNewProduct({ ...newProduct, preco: Number(e.target.value) })}
-        />
-      </Modal>
-
-      {/* Modal de Confirmação para Remover Produto */}
-      <Modal
-        isOpen={modalType === 'confirmRemove'}
-        onClose={() => setModalType(null)}
-        title="Confirmar Remoção"
-        onSubmit={handleRemoveProduct}
+        isOpen={removeModalOpen}
+        onClose={() => setRemoveModalOpen(false)}
+        title="Remover Cliente"
+        onSubmit={handleRemoveUser}
         variant="remove"
-      >
-        <div>Tem certeza de que deseja remover o produto {selectedProduct?.nome}?</div>
-      </Modal>
+      />
+
+      {/* Modal para ações da tabela */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={modalConfig.title}
+        onSubmit={handleSubmit} 
+      />
     </>
   );
 };
 
-export default ProductPage;
+export default App;

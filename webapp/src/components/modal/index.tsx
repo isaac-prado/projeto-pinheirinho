@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, OutlinedInput, InputAdornment } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -8,32 +8,67 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   onSubmit: (data: any) => void;
-  variant?: 'default' | 'register' | 'remove';
+  variant?: 'default' | 'register' | 'remove' | 'update' | 'updatePrice' | 'removeProduct';
+  newProduct?: { id?: string, nome: string; quantidade: number; preco: number };
+  setNewProduct?: React.Dispatch<React.SetStateAction<{ nome: string; quantidade: number; preco: number }>>;
+  children?: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant = 'default' }) => {
-  const [value, setValue] = useState<number>(0);
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, newProduct, setNewProduct, variant = 'default' }) => {
+  const [nome, setNome] = useState<string>(newProduct?.nome || '');
+  const [quantidade, setQuantidade] = useState<number>(newProduct?.quantidade || 0);
+  const [preco, setPreco] = useState<number>(newProduct?.preco || 0);
+
   const [cpf, setCpf] = useState<string>('');
-  const [nome, setNome] = useState<string>('');
   const [endereco, setEndereco] = useState<string>('');
   const [telefone, setTelefone] = useState<string>('');
-  const saldo = 0;
+  const saldo = 0; 
+
+  useEffect(() => {
+    
+    if (newProduct) {
+      setNome(newProduct.nome);
+      setQuantidade(newProduct.quantidade);
+      setPreco(newProduct.preco);
+    }
+  }, [newProduct]);
 
   const handleSubmit = () => {
+    let dataToSubmit;
+
     if (variant === 'register') {
-      onSubmit({ cpf, nome, endereco, telefone, saldo });
+      dataToSubmit = { cpf, nome, endereco, telefone, saldo };
+    } else if (variant === 'remove') {
+      dataToSubmit = { cpf };
+    } else if (variant === 'update') {
+      dataToSubmit = { id: newProduct?.id, quantidade };
+    } else if (variant === 'updatePrice') {
+      dataToSubmit = {preco};
+    } else if (variant === 'removeProduct') {
+      dataToSubmit = {preco};
+    } else {
+      dataToSubmit = { nome, quantidade, preco };
+    }
+
+    console.log('Dados enviados:', dataToSubmit);
+    onSubmit(dataToSubmit);
+    onClose();
+  };
+
+  const handleClose = () => {
+    if (variant === 'register') {
       setCpf('');
       setNome('');
       setEndereco('');
       setTelefone('');
     } else if (variant === 'remove') {
-      onSubmit({ cpf });
       setCpf('');
     } else {
-      onSubmit(value);
-      setValue(0);
+      setNome('');
+      setQuantidade(0);
+      setPreco(0);
     }
-    onClose(); // Fecha o modal após o envio
+    onClose();
   };
 
   return (
@@ -84,18 +119,56 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
             value={cpf}
             onChange={(e) => setCpf(e.target.value)}
           />
-        ) : (
+        ) : variant === 'update' ? (
+          <TextField
+            label="Nova Quantidade"
+            type="number"
+            fullWidth
+            margin="normal"
+            value={quantidade}
+            onChange={(e) => setQuantidade(Number(e.target.value))}
+          />
+        ) : variant === 'updatePrice' ? (
           <OutlinedInput
             startAdornment={<InputAdornment position="start">R$</InputAdornment>}
             fullWidth
-            name='valor'
-            value={value}
-            onChange={(e) => setValue(Number(e.target.value))}
+            margin="dense"
+            value={preco}
+            onChange={(e) => setPreco(Number(e.target.value))}
           />
+        ) : variant === 'removeProduct' ? (
+          <div>Tem certeza de que deseja remover o produto {nome}?</div>
+        ): (
+          <>
+            <TextField
+              label="Nome"
+              fullWidth
+              name="nome"
+              margin="normal"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+            />
+            <TextField
+              label="Quantidade"
+              fullWidth
+              type="number"
+              name="quantidade"
+              margin="normal"
+              value={quantidade}
+              onChange={(e) => setQuantidade(Number(e.target.value))}
+            />
+            <OutlinedInput
+              startAdornment={<InputAdornment position="start">R$</InputAdornment>}
+              fullWidth
+              name='valor'
+              value={preco}
+              onChange={(e) => setPreco(Number(e.target.value))}
+            />
+          </>
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary">
+        <Button onClick={handleClose} color="secondary">
           <ClearIcon />
         </Button>
         <Button onClick={handleSubmit} color="primary">

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Product from '../domain/product';
+import Product from './product';
 
 class ProductService {
   async getProducts(): Promise<Product[]> {
