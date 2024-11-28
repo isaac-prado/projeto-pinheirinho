@@ -16,14 +16,21 @@ pedidoRouters.get(
     pedidoController.rotaConsultarPedido.bind(pedidoController)
 );
 
+pedidoRouters.get
+
 pedidoRouters.delete(
     `${rotaBasePedido}/:id`,
     pedidoController.rotaRemoverPedido.bind(pedidoController)
 );
 
 pedidoRouters.get(
-    rotaBasePedido,
+    `${rotaBasePedido}`,
     pedidoController.rotaListarPedidos.bind(pedidoController)
+);
+
+pedidoRouters.put(
+    `${rotaBasePedido}/:id`,
+    pedidoController.rotaAlterarPedido.bind(pedidoController)
 );
 
 export default pedidoRouters;

@@ -1,5 +1,4 @@
 import PedidoORM from "../../../../infra/orm/entidades/PedidoORM";
-import Pedido from "../../../dominio/entidades/pedido";
 import { IPedidoRepository } from "../../contratos/iPedidoRepository";
 import { PedidoConsulta } from "../../models/pedidoConsulta";
 import { IListarPedidos } from "./interfaces/iListarPedidos";

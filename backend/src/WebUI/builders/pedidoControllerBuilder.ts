@@ -1,4 +1,5 @@
 import { AdicionarPedido } from "../../core/aplicacao/casosDeUso/pedidos/adicionarPedido";
+import { AlterarPedido } from "../../core/aplicacao/casosDeUso/pedidos/alterarPedido";
 import { ConsultarPedido } from "../../core/aplicacao/casosDeUso/pedidos/consultarPedido";
 import { ListarPedidos } from "../../core/aplicacao/casosDeUso/pedidos/listarPedidos";
 import { RemoverPedido } from "../../core/aplicacao/casosDeUso/pedidos/removerPedido";
@@ -16,7 +17,14 @@ const adicionarPedido = new AdicionarPedido(
 const consultarPedido = new ConsultarPedido(pedidoRepository);
 const removerPedido = new RemoverPedido(pedidoRepository, clienteRepository);
 const listarPedidos = new ListarPedidos(pedidoRepository);
+const alterarPedido = new AlterarPedido(pedidoRepository);
 
 export function pedidoControllerBuilder() {
-    return new PedidoController(adicionarPedido, consultarPedido, removerPedido, listarPedidos);
+    return new PedidoController(
+        adicionarPedido, 
+        consultarPedido, 
+        removerPedido, 
+        listarPedidos, 
+        alterarPedido
+    );
 }

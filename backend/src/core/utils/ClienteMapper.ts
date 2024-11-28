@@ -10,7 +10,7 @@ export class ClienteMapper {
             clienteORM.endereco,
             clienteORM.telefone,
             clienteORM.saldo,
-            clienteORM.pedidos?.map(pedidoORM => PedidoMapper.toDomain(pedidoORM)),
+            clienteORM.pedidos?.map(pedidoORM => PedidoMapper.toDomain(pedidoORM)) || [], // Use um array vazio por padrão
             clienteORM.email,
         );
         return cliente;

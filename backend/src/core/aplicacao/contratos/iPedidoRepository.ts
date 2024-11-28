@@ -7,4 +7,5 @@ export interface IPedidoRepository {
     consultarPedidoPorId(pedidoId: number): Promise<PedidoORM>;
     removerPedido(pedidoId: number): Promise<void>;
     listarTodosPedidos(): Promise<PedidoORM[]>;
+    alterarPedido(pedido: Pedido): Promise<PedidoORM>;
 }
