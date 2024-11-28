@@ -1,9 +1,10 @@
 import Customer from "./customer";
+import Product from "../pages/product";
 
 export default interface Order {
     id: number,
-    data: Date, 
+    data: Date,  
     valor: number, 
-    produtos: Produtos[],
+    produtos: Product[],
     totalAmount: number
 }

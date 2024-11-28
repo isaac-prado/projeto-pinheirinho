@@ -1,4 +1,5 @@
 import Pedido from "./pedido";
+import ClienteORM from "../../../infra/orm/entidades/ClienteORM";
 
 export default class Cliente {
     id: number;
@@ -24,7 +25,7 @@ export default class Cliente {
         this.endereco = endereco;
         this.telefone = telefone;
         this.saldo = saldo;
-        this.pedidos = pedidos;
+        this.pedidos = pedidos || [];
         if(email) this.email = email;
     }
 
@@ -40,5 +41,17 @@ export default class Cliente {
 
     public podeSerRemovido(): boolean {
         return this.saldo === 0;
+    }
+
+    static fromORM(clienteOrm: ClienteORM, pedidos: Pedido[] = []): Cliente {
+        return new Cliente(
+            clienteOrm.nome,
+            clienteOrm.cpf,
+            clienteOrm.endereco,
+            clienteOrm.telefone,
+            Number(clienteOrm.saldo),
+            pedidos,
+            clienteOrm.email
+        );
     }
 }

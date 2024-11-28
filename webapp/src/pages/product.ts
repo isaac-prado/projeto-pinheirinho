@@ -1,7 +1,7 @@
 interface Product {
     id: string;
     nome: string;
-    quantidade: number;
+    estoque: number;
     preco: number;
   }
   

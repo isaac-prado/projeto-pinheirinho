@@ -8,24 +8,14 @@ export class RemoverCliente implements IRemoverCliente {
     ) {}
 
     async executar(cpf: string): Promise<void> {
-        
         const clienteOrm = await this.clienteRepository.consultarCliente(cpf);
 
-        
         if (!clienteOrm) {
             throw new Error("Cliente não encontrado.");
         }
 
-        const cliente = new Cliente(
-            clienteOrm.nome,
-            clienteOrm.cpf,
-            clienteOrm.endereco,
-            clienteOrm.telefone,
-            Number(clienteOrm.saldo),
-            clienteOrm.email
-        );
+        const cliente = Cliente.fromORM(clienteOrm);
 
-        
         if (!cliente.podeSerRemovido()) {
             throw new Error("Cliente não pode ser removido pois possui saldo");
         }
@@ -33,4 +23,3 @@ export class RemoverCliente implements IRemoverCliente {
         await this.clienteRepository.removerCliente(cpf);
     }
 }
-

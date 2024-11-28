@@ -3,12 +3,13 @@ import Table from '../../components/table';
 import Modal from '../../components/modal';
 import { AddCircleOutline, AttachMoney, Delete } from '@material-ui/icons';
 import CurrencyFormatter from '../../utils/currencyFormatter';
+import ProductService from '../../services/productService';
 import './ProductPage.css';
 
 interface Product {
   id: string;
   nome: string;
-  quantidade: number;
+  estoque: number;
   preco: number;
 }
 
@@ -17,17 +18,28 @@ const ProductPage: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [tableData, setTableData] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [newProduct, setNewProduct] = useState<{ id?: string; nome: string; quantidade: number; preco: number }>({ nome: '', quantidade: 0, preco: 0.0 });
+  const [newProduct, setNewProduct] = useState<{ id?: string; nome: string; estoque: number; preco: number }>({ nome: '', estoque: 0, preco: 0.0 });
 
-  const initialData: Product[] = [
-    { id: '1', nome: 'Produto 1', quantidade: 10, preco: 25.0 },
-    { id: '2', nome: 'Produto 2', quantidade: 20, preco: 50.0 },
-    { id: '3', nome: 'Produto 3', quantidade: 0, preco: 15.0 },
-  ];
+  const productService = new ProductService();
 
   useEffect(() => {
-    setTableData(initialData);
+    // Cargar los productos del backend
+    const loadProducts = async () => {
+      const products = await productService.getProducts();
+      setTableData(products);
+    };
+    loadProducts();
   }, []);
+
+  // const initialData: Product[] = [
+  //   { id: '1', nome: 'Produto 1', quantidade: 10, preco: 25.0 },
+  //   { id: '2', nome: 'Produto 2', quantidade: 20, preco: 50.0 },
+  //   { id: '3', nome: 'Produto 3', quantidade: 0, preco: 15.0 },
+  // ];
+
+  // useEffect(() => {
+  //   setTableData(initialData);
+  // }, []);
 
   const filteredTableData = tableData.filter((product) =>
     product.nome.toLowerCase().includes(searchQuery.toLowerCase()) || product.id.includes(searchQuery)
@@ -36,7 +48,7 @@ const ProductPage: React.FC = () => {
   const columns = [
     { title: 'Nome', field: 'nome' },
     { title: 'ID', field: 'id' },
-    { title: 'Quantidade em Estoque', field: 'quantidade' },
+    { title: 'Quantidade em Estoque', field: 'estoque' },
     {
       title: 'Preço',
       field: 'preco',
@@ -59,31 +71,29 @@ const ProductPage: React.FC = () => {
     setSelectedProduct(product);
     setModalType(type);
     if (type === 'register') {
-      setNewProduct({ nome: '', quantidade: 0, preco: 0.0 });
+      setNewProduct({ nome: '', estoque: 0, preco: 0.0 });
     } else if (type === 'update' && product) {
       setNewProduct({ ...product });
     } else if (product) {
-      setNewProduct({ nome: product.nome, quantidade: product.quantidade, preco: product.preco });
+      setNewProduct({ nome: product.nome, estoque: product.estoque, preco: product.preco });
     }
   };
 
-  const handleAddProduct = (newProductData: Product) => {
-
-    console.log('Nuevo Producto:', newProductData);
-
-  const newProductWithId = {
-    id: String(tableData.length + 1),
-    nome: newProductData.nome,
-    quantidade: newProductData.quantidade,
-    preco: newProductData.preco,
+  const handleAddProduct = async (newProductData: { nome: string; estoque: number; preco: number }) => {
+    try {
+      console.log("Datos del nuevo producto:", newProductData);
+      await productService.addProduct(newProductData);
+  
+      const updatedProducts = await productService.getProducts();
+      setTableData(updatedProducts);
+  
+      setNewProduct({ nome: '', estoque: 0, preco: 0.0 });
+      setModalType(null);
+    } catch (error) {
+      console.error("Error al agregar el producto:", error);
+    }
   };
-
-    setTableData((prevData) => [...prevData, newProductWithId]);
-
-    
-    setNewProduct({ nome: '', quantidade: 0, preco: 0.0 });
-    setModalType(null); 
-  };
+  
 
   const handleUpdateQuantity = (updatedData: { id: string; quantidade: number }) => {
     setTableData((prevData) => {

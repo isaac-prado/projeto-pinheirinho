@@ -9,7 +9,7 @@ const OrderPage: React.FC = () => {
     const columns = [
         { title: 'Cod.', field: 'cod' },
         { title: 'Data', field: 'date',
-            render: (rowData: Order) => formatDateToShort(new Date(rowData.date))
+            render: (rowData: Order) => formatDateToShort(new Date(rowData.data))
          },
         { title: 'Cliente', field: 'name' },
         { title: 'Valor Total', field: 'totalAmount', filtering: false,

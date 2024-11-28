@@ -9,14 +9,14 @@ interface ModalProps {
   title: string;
   onSubmit: (data: any) => void;
   variant?: 'default' | 'register' | 'remove' | 'update' | 'updatePrice' | 'removeProduct';
-  newProduct?: { id?: string, nome: string; quantidade: number; preco: number };
-  setNewProduct?: React.Dispatch<React.SetStateAction<{ nome: string; quantidade: number; preco: number }>>;
+  newProduct?: { id?: string, nome: string; estoque: number; preco: number };
+  setNewProduct?: React.Dispatch<React.SetStateAction<{ nome: string; estoque: number; preco: number }>>;
   children?: React.ReactNode;
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, newProduct, setNewProduct, variant = 'default' }) => {
   const [nome, setNome] = useState<string>(newProduct?.nome || '');
-  const [quantidade, setQuantidade] = useState<number>(newProduct?.quantidade || 0);
+  const [estoque, setEstoque] = useState<number>(newProduct?.estoque || 0);
   const [preco, setPreco] = useState<number>(newProduct?.preco || 0);
 
   const [cpf, setCpf] = useState<string>('');
@@ -28,7 +28,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, newProd
     
     if (newProduct) {
       setNome(newProduct.nome);
-      setQuantidade(newProduct.quantidade);
+      setEstoque(newProduct.estoque);
       setPreco(newProduct.preco);
     }
   }, [newProduct]);
@@ -41,13 +41,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, newProd
     } else if (variant === 'remove') {
       dataToSubmit = { cpf };
     } else if (variant === 'update') {
-      dataToSubmit = { id: newProduct?.id, quantidade };
+      dataToSubmit = { id: newProduct?.id, estoque };
     } else if (variant === 'updatePrice') {
       dataToSubmit = {preco};
     } else if (variant === 'removeProduct') {
       dataToSubmit = {preco};
     } else {
-      dataToSubmit = { nome, quantidade, preco };
+      dataToSubmit = { nome, estoque, preco };
     }
 
     console.log('Dados enviados:', dataToSubmit);
@@ -65,7 +65,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, newProd
       setCpf('');
     } else {
       setNome('');
-      setQuantidade(0);
+      setEstoque(0);
       setPreco(0);
     }
     onClose();
@@ -125,8 +125,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, newProd
             type="number"
             fullWidth
             margin="normal"
-            value={quantidade}
-            onChange={(e) => setQuantidade(Number(e.target.value))}
+            value={estoque}
+            onChange={(e) => setEstoque(Number(e.target.value))}
           />
         ) : variant === 'updatePrice' ? (
           <OutlinedInput
@@ -154,8 +154,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, newProd
               type="number"
               name="quantidade"
               margin="normal"
-              value={quantidade}
-              onChange={(e) => setQuantidade(Number(e.target.value))}
+              value={estoque}
+              onChange={(e) => setEstoque(Number(e.target.value))}
             />
             <OutlinedInput
               startAdornment={<InputAdornment position="start">R$</InputAdornment>}

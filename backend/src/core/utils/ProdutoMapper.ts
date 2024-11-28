@@ -9,7 +9,7 @@ export class ProdutoMapper {
             produtoORM.nome,
             produtoORM.estoque,
             produtoORM.preco,
-            produtoORM.pedidos.map(pedidoORM => PedidoMapper.toDomain(pedidoORM))
+            (produtoORM.pedidos || []).map(pedidoORM => PedidoMapper.toDomain(pedidoORM))
         );
     }
 
@@ -19,7 +19,7 @@ export class ProdutoMapper {
         produtoORM.nome = produto.nome;
         produtoORM.estoque = produto.estoque;
         produtoORM.preco = produto.preco;
-        produtoORM.pedidos = produto.pedidos.map(pedido => PedidoMapper.toPersistence(pedido));
+        produtoORM.pedidos = (produto.pedidos || []).map(pedido => PedidoMapper.toPersistence(pedido));
         return produtoORM;
     }
 }
