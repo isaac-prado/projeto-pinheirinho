@@ -31,6 +31,7 @@ export default class Cliente {
 
     public adicionarSaldo(valorAdicionado: number): void {
         if (valorAdicionado > 0)
+            Number(this.saldo);
             this.saldo += valorAdicionado;
     }
 

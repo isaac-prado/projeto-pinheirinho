@@ -10,7 +10,7 @@ export class PedidoMapper {
             pedidoORM.data,
             pedidoORM.valor,
             ClienteMapper.toDomain(pedidoORM.cliente), 
-            pedidoORM.produtos.map(produtoOrm => ProdutoMapper.toDomain(produtoOrm)) || []
+            pedidoORM.produtos?.map(produtoOrm => ProdutoMapper.toDomain(produtoOrm)) || []
         ) 
     }
 
