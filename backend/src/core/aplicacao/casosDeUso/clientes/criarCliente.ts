@@ -12,7 +12,7 @@ export class CriarCliente implements ICriarCliente {
         endereco: string,
         telefone: string,
         saldo: number,
-        email: string,
+        email: string
     ): Promise<void> {
         const clienteMesmoNome = await this.clienteRepository.consultarCliente(
             cpf,
@@ -25,9 +25,7 @@ export class CriarCliente implements ICriarCliente {
             telefone,
             saldo,
             email,
-            endereco,
+            endereco
         );
-
-        console.log("Cliente criado com sucesso:", { nome, cpf, telefone, saldo, email, endereco });
     }
 }

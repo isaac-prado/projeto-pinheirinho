@@ -33,10 +33,8 @@ export class RemoverPedido implements IRemoverPedido {
 
       const clienteOrmAtualizado = ClienteMapper.toPersistence(cliente);
       await this.clienteRepository.alterarCliente(clienteOrmAtualizado);
-      console.log(`Saldo do Cliente ${cliente.nome} atualizado com sucesso!`);
 
       await this.pedidoRepository.removerPedido(pedidoId);
-      console.log(`Pedido ${pedidoId} removido com sucesso!`);
     } catch (error) {
       console.error("Erro ao remover pedido:", error);
       throw new Error("Erro ao remover pedido.")
