@@ -10,6 +10,7 @@ import { ArrowRightSharp, AttachMoney, ShoppingCart } from '@material-ui/icons';
 import { formatDateToFull } from '../utils/dateFormatter';
 import OrderPage from './Order/OrderPage';
 import ProductPage from './products/ProductPage';
+import { Link } from 'react-router-dom';
 
 const App: React.FC = () => {
 
@@ -207,6 +208,9 @@ const App: React.FC = () => {
         <button className="modal-button" onClick={() => setRemoveModalOpen(true)}>
           Remover Cliente
         </button>
+        <Link to="/relatorios">
+          <button className="modal-button">Ver Relatórios</button>
+        </Link>
       </div>
 
       {!showOrderTable && !showProductPage ? (
