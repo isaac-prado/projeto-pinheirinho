@@ -1,0 +1,58 @@
+/* CenteredPage.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Configurações gerais para o body e html */
+html, body {
+  height: 100%;
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f8ec;
+}
+
+
+.chart-container {
+  width: 20%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 100px); /* Ajuste para preencher a tela inteira menos o cabeçalho e rodapé */
+  margin-left: 200px;
+}
+
+.container {
+  text-align: center;
+}
+
+header {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding-top: 30px;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+footer {
+  background-color: #0d3530;
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+.logo {
+  width: 160px;
+  height: auto;
+  margin: 0 auto;
+}
