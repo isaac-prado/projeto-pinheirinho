@@ -8,17 +8,33 @@ export const customerMock: Customer[] = [
   ];
 
 export default class CustomerService {
-    private apiClient: AxiosInstance;
+    public apiClient: AxiosInstance;
 
     constructor() {
         this.apiClient = axios.create({
-          baseURL: '...',
+          baseURL: 'http://localhost:8080/api/cliente',
           headers: {
             'Content-Type': 'application/json',
           },
         });
     }
 
+  public async create(customer: Customer): Promise<void> {
+    var dto = {
+      nome: customer.name,
+      cpf: customer.cpf,
+      endereco: "",
+      telefone: customer.phone,
+      saldo: "0"
+    }
+
+    var result = await this.apiClient.post("/", dto);
+
+    if(result.status !== 201) 
+      throw new Error("Error while creating customer with body: " + customer)
+
+    return;
+  }
 
     
 

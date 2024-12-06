@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, OutlinedInput, InputAdornment } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
+import Customer from '../../domain/customer';
 
 interface ModalProps {
   isOpen: boolean;
@@ -20,7 +21,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
 
   const handleSubmit = () => {
     if (variant === 'register') {
-      onSubmit({ cpf, name, address, phone });
+      let customer = { cpf: cpf, name: name, 
+        address: address, 
+        phone:phone,
+        credit: 0, 
+        isActive: true } as Customer
+      onSubmit(customer);
       setCpf('');
       setName('');
       setAddress('');

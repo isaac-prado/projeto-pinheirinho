@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Table from '../components/table';
-import { customerMock } from '../services/customerService';
+import CustomerService, { customerMock } from '../services/customerService';
 import './App.css';
 import Modal from '../components/modal';
 import CurrencyFormatter from '../utils/currencyFormatter';
@@ -11,6 +11,8 @@ import { formatDateToFull } from '../utils/dateFormatter';
 import OrderPage from './Order/OrderPage';
 
 const App: React.FC = () => {
+
+  let customerService = new CustomerService();
 
   const [currentTime, setCurrentTime] = useState(new Date());
   const [userModalOpen, setUserModalOpen] = useState(false);
@@ -103,8 +105,8 @@ const App: React.FC = () => {
     }
   };
 
-  const handleAddUser = (data: Customer) => {
-    customerMock.push(data);
+  const handleAddUser = async(data: Customer): Promise<void> => {
+    await customerService.create(data);
     setUserModalOpen(false);
   };
 
