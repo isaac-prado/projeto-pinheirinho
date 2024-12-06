@@ -43,6 +43,22 @@ export default class OrderService {
         alert("Ocorreu um erro. Verifique o saldo.")
       }
     }
+    public async getAll(): Promise<Order[]> {
+      try {
+        const response = await this.apiClient.get("/");
+        const orders = response.data.map((item: any) => ({
+          date: new Date(item.data).toUTCString(),
+          customer: { name: item.cliente, cpf: "" },
+          totalAmount: parseFloat(item.valor),
+        }));
+  
+        return orders.reverse();
+      } catch (error) {
+        console.error("Erro ao buscar pedidos:", error);
+        throw new Error("Não foi possível carregar os pedidos.");
+      }
+  
+    }
 
     
 
