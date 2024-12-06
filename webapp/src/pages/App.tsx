@@ -21,7 +21,7 @@ const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({ title: '', action: '' });
   const [selectedRow, setSelectedRow] = useState<Customer | null>(null);
-  const [tableData, setTableData] = useState<Customer[]>(customerMock);
+  const [tableData, setTableData] = useState<Customer[]>([]);
   
   const [showOrderTable, setShowOrderTable] = useState<boolean>(false);
 
@@ -125,6 +125,13 @@ const App: React.FC = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    let customers = customerService.getAll().then(data => {
+      setTableData(data);
+      console.log(data)
+    });
+  }, [])
 
   return (
     <>

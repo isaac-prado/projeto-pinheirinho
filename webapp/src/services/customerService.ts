@@ -31,9 +31,28 @@ export default class CustomerService {
     var result = await this.apiClient.post("/", dto);
 
     if(result.status !== 201) 
-      throw new Error("Error while creating customer with body: " + customer)
+      throw new Error("Error while creating customer.")
 
     return;
+  }
+
+  public async getAll(): Promise<Customer[]> {
+    let result = await this.apiClient.get("/obterClientes");
+
+    if(result.status !== 200)
+      throw new Error("Error while getting customers.");
+    
+    let data = Array.isArray(result.data) ? result.data : []
+    let customers: Customer[] = data.map(obj => ({
+      cpf: obj.cpf, 
+      name: obj.nome, 
+      credit: obj.saldo ?? 0,
+      phone: obj.telefone, 
+      email: obj.email, 
+      isActive: true, 
+    }))
+
+    return customers;
   }
 
     
