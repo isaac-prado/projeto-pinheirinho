@@ -15,13 +15,34 @@ export default class OrderService {
 
     constructor() {
         this.apiClient = axios.create({
-          baseURL: '...',
+          baseURL: 'http://localhost:8080/api/pedido',
           headers: {
             'Content-Type': 'application/json',
           },
         });
     }
 
+    public async create(order: Order) {
+      var dto = {
+        cpf: order.customer.cpf,
+        pedido: {
+          valor: order.totalAmount,
+          produtos: [],
+        }
+      }
+
+      try {
+        var result = await this.apiClient.post("/", dto);
+
+        if(result.status !==200)
+          throw new Error("Error while trying create a order.")
+      
+        return;
+      }catch(ex) {
+        console.error(ex)
+        alert("Ocorreu um erro. Verifique o saldo.")
+      }
+    }
 
     
 

@@ -9,10 +9,13 @@ import { ArrowRightSharp, AttachMoney, ShoppingCart } from '@material-ui/icons';
 import { Switch } from '@material-ui/core';
 import { formatDateToFull } from '../utils/dateFormatter';
 import OrderPage from './Order/OrderPage';
+import OrderService from '../services/orderService';
+import Order from '../domain/order';
 
 const App: React.FC = () => {
 
   let customerService = new CustomerService();
+  let orderService = new OrderService();
 
   const [currentTime, setCurrentTime] = useState(new Date());
   const [userModalOpen, setUserModalOpen] = useState(false);
@@ -95,7 +98,8 @@ const App: React.FC = () => {
       if(modalConfig.action === 'updateCredit')
         await addCredit(selectedRow.cpf, value)
 
-      //if add order
+      if(modalConfig.action === "addOrder")
+        await addOrder(selectedRow, value)
 
       var newData = await customerService.getAll();
       setTableData(newData);
@@ -118,6 +122,17 @@ const App: React.FC = () => {
 
   const addCredit = async(cpf: string, value: number): Promise<void> => {
     await customerService.addCredit(cpf, value);
+  }
+
+  const addOrder = async(customer: Customer, value: number): Promise<void> => {
+    let order: Order = {
+      cod: undefined, 
+      date: (new Date()).toUTCString(),
+      customer: customer, 
+      totalAmount: value
+    }
+
+    await orderService.create(order);
   }
 
   useEffect(() => {
