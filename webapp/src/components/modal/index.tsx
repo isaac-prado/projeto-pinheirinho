@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, OutlinedInput, InputAdornment } from '@material-ui/core';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+  OutlinedInput,
+  InputAdornment,
+} from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
-import Customer from '../../domain/customer';
 
 interface ModalProps {
   isOpen: boolean;
@@ -13,89 +20,34 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant = 'default' }) => {
-  const [value, setValue] = useState<number>(0);
-  const [cpf, setCpf] = useState<string>('');
-  const [name, setName] = useState<string>('');
-  const [address, setAddress] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
+  const [value, setValue] = useState<number>(0); 
+  const handleValueChange = (input: string) => {
+    const numericValue = input.replace(/\D/g, '');
+    const updatedValue = parseInt(numericValue || '0', 10);
+    setValue(updatedValue);
+  };
+
+  const formatCurrency = (value: number): string => {
+    return (value / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+  };
 
   const handleSubmit = () => {
-    if (variant === 'register') {
-      let customer = { cpf: cpf, name: name, 
-        address: address, 
-        phone:phone,
-        credit: 0, 
-        isActive: true } as Customer
-      onSubmit(customer);
-      setCpf('');
-      setName('');
-      setAddress('');
-      setPhone('');
-    } else if (variant === 'remove') {
-      onSubmit({ cpf });
-      setCpf('');
-    } else {
-      onSubmit(value);
-      setValue(0);
-    }
-    onClose(); // Fecha o modal após o envio
+    onSubmit(value / 100); 
+    setValue(0); 
+    onClose();
   };
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        {variant === 'register' ? (
-          <>
-            <TextField
-              label="CPF"
-              fullWidth
-              name='cpf'
-              margin="normal"
-              value={cpf}
-              onChange={(e) => setCpf(e.target.value)}
-            />
-            <TextField
-              label="Nome"
-              fullWidth
-              name='nome'
-              margin="normal"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <TextField
-              label="Endereço"
-              fullWidth
-              name='endereco'
-              margin="normal"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
-            <TextField
-              label="Telefone"
-              fullWidth
-              name='telefone'
-              margin="normal"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          </>
-        ) : variant === 'remove' ? (
-          <TextField
-            label="CPF"
-            fullWidth
-            name='cpf'
-            margin="normal"
-            value={cpf}
-            onChange={(e) => setCpf(e.target.value)}
-          />
-        ) : (
+        {variant === 'default' && (
           <OutlinedInput
             startAdornment={<InputAdornment position="start">R$</InputAdornment>}
             fullWidth
-            name='valor'
-            value={value}
-            onChange={(e) => setValue(Number(e.target.value))}
+            name="valor"
+            value={formatCurrency(value)}
+            onChange={(e) => handleValueChange(e.target.value)}
           />
         )}
       </DialogContent>
