@@ -55,6 +55,18 @@ export default class CustomerService {
     return customers;
   }
 
-    
+  public async addCredit(cpf: string, value: number): Promise<void> {
+    var dto = {
+      cpf: cpf, 
+      valor: value
+    }
+
+    var result = await this.apiClient.post("/adicionarSaldo", dto);
+
+    if(result.status !== 200)
+      throw new Error("Error while trying to add credits for customer");
+
+    return;
+  }    
 
 }

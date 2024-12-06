@@ -90,17 +90,15 @@ const App: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (value: number) => {
+  const handleSubmit = async(value: number) => {
     if (selectedRow) {
-      const updatedData = tableData.map((row) => {
-        if (row.name === selectedRow.name) { //debit? 
-          return modalConfig.action === 'updateCredit'
-            ? { ...row, credit: row.credit + value }
-            : { ...row, credit: row.credit - value };
-        }
-        return row;
-      });
-      setTableData(updatedData);
+      if(modalConfig.action === 'updateCredit')
+        await addCredit(selectedRow.cpf, value)
+
+      //if add order
+
+      var newData = await customerService.getAll();
+      setTableData(newData);
       setIsModalOpen(false);
     }
   };
@@ -118,6 +116,10 @@ const App: React.FC = () => {
     setRemoveModalOpen(false);
   };
 
+  const addCredit = async(cpf: string, value: number): Promise<void> => {
+    await customerService.addCredit(cpf, value);
+  }
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(new Date());
@@ -127,9 +129,8 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    let customers = customerService.getAll().then(data => {
+    customerService.getAll().then(data => {
       setTableData(data);
-      console.log(data)
     });
   }, [])
 
