@@ -50,7 +50,7 @@ const App: React.FC = () => {
 
   const customerDetail: any = [
     {
-      icon: React.forwardRef((_) => <ArrowRightSharp/>),
+      icon: React.forwardRef((props, ref) => <ArrowRightSharp/>),
       tooltip: 'Ver detalhes',
       render: (rowData: Customer) => {
         return (

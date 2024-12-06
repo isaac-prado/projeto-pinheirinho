@@ -13,21 +13,21 @@ interface TableProps {
 
 const Table: React.FC<TableProps> = ({ title, columns, data, detailPanel, isFiltering = false }) => {
   const tableIcons: any = {
-    Add:React.forwardRef((_) =><Add/>),
-    Check:React.forwardRef((_) =><Check/>),
-    Clear:React.forwardRef((_) =><Clear/>),
-    Delete:React.forwardRef((_) =><DeleteOutline/>),
-    Edit:React.forwardRef((_) =><Edit/>),
-    Filter:React.forwardRef((_) =><Edit/>),
-    FirstPage:React.forwardRef((_) =><FirstPage/>),
-    LastPage:React.forwardRef((_) =><LastPage/>),
-    NextPage:React.forwardRef((_) =><ChevronRight/>),
-    PreviousPage:React.forwardRef((_) =><ChevronLeft/>),
-    ResetSearch:React.forwardRef((_) =><Clear/>),
-    Search:React.forwardRef((_) =><Search/>),
-    SortArrow:React.forwardRef((_) =><ArrowUpward/>),
-    AttachMoney:React.forwardRef((_) =><AttachMoney/>),
-    ShoppingCart:React.forwardRef((_) =><ShoppingCart />),
+    Add:React.forwardRef((props, ref) =><Add/>),
+    Check:React.forwardRef((props, ref) =><Check/>),
+    Clear:React.forwardRef((props, ref) =><Clear/>),
+    Delete:React.forwardRef((props, ref) =><DeleteOutline/>),
+    Edit:React.forwardRef((props, ref) =><Edit/>),
+    Filter:React.forwardRef((props, ref) =><Edit/>),
+    FirstPage:React.forwardRef((props, ref) =><FirstPage/>),
+    LastPage:React.forwardRef((props, ref) =><LastPage/>),
+    NextPage:React.forwardRef((props, ref) =><ChevronRight/>),
+    PreviousPage:React.forwardRef((props, ref) =><ChevronLeft/>),
+    ResetSearch:React.forwardRef((props, ref) =><Clear/>),
+    Search:React.forwardRef((props, ref) =><Search/>),
+    SortArrow:React.forwardRef((props, ref) =><ArrowUpward/>),
+    AttachMoney:React.forwardRef((props, ref) =><AttachMoney/>),
+    ShoppingCart:React.forwardRef((props, ref) =><ShoppingCart />),
   }
 
   return (
