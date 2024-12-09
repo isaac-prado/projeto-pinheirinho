@@ -162,9 +162,9 @@ const App: React.FC = () => {
         <button className="modal-button" onClick={() => setUserModalOpen(true)}>
           Adicionar Cliente
         </button>
-        <button className="modal-button" onClick={() => setRemoveModalOpen(true)}>
+        {/* <button className="modal-button" onClick={() => setRemoveModalOpen(true)}>
           Remover Cliente
-        </button>
+        </button> */}
       </div>
 
       {!showOrderTable 
