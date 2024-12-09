@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import Order from "../domain/order";
 import { customerMock } from "./customerService";
+import CurrencyFormatter from "../utils/currencyFormatter";
 
 
 export const orderMock: Order[] = [
@@ -43,6 +44,7 @@ export default class OrderService {
         alert("Ocorreu um erro. Verifique o saldo.")
       }
     }
+    
     public async getAll(): Promise<Order[]> {
       try {
         const response = await this.apiClient.get("/");
@@ -59,7 +61,4 @@ export default class OrderService {
       }
   
     }
-
-    
-
 }

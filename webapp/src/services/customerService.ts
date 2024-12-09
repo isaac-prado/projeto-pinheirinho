@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import Customer from "../domain/customer";
-
+import CurrencyFormatter from "../utils/currencyFormatter";
 
 export const customerMock: Customer[] = [
   { cpf: '123.456.789-00', phone: '35 999111111', name: 'John', credit: 100.50, isActive: true },
@@ -70,3 +70,4 @@ export default class CustomerService {
   }    
 
 }
+

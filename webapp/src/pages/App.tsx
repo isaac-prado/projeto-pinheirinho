@@ -93,7 +93,7 @@ const App: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = async(value: number) => {
+  const handleSubmit = async(value: string) => {
     if (selectedRow) {
       if(modalConfig.action === 'updateCredit')
         await addCredit(selectedRow.cpf, value)
@@ -120,16 +120,16 @@ const App: React.FC = () => {
     setRemoveModalOpen(false);
   };
 
-  const addCredit = async(cpf: string, value: number): Promise<void> => {
-    await customerService.addCredit(cpf, value);
+  const addCredit = async(cpf: string, value: string): Promise<void> => {
+    await customerService.addCredit(cpf, CurrencyFormatter.parseCurrencyToNumber(value));
   }
 
-  const addOrder = async(customer: Customer, value: number): Promise<void> => {
+  const addOrder = async(customer: Customer, value: string): Promise<void> => {
     let order: Order = {
       cod: undefined, 
       date: (new Date()).toUTCString(),
       customer: customer, 
-      totalAmount: value
+      totalAmount: CurrencyFormatter.parseCurrencyToNumber(value)
     }
 
     await orderService.create(order);

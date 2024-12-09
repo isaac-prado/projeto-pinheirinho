@@ -6,4 +6,11 @@ export default class CurrencyFormatter {
             currency: 'BRL'
         });
     }
+
+    static parseCurrencyToNumber(currency: string): number{
+        const numericString = currency
+          .replace(/[^\d,-]/g, '') 
+          .replaceAll(',', '.'); 
+        return parseFloat(numericString);
+      }
 }

@@ -13,7 +13,7 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant = 'default' }) => {
-  const [value, setValue] = useState<number>(0);
+  const [value, setValue] = useState<string>("0,00");
   const [cpf, setCpf] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [address, setAddress] = useState<string>('');
@@ -36,9 +36,23 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
       setCpf('');
     } else {
       onSubmit(value);
-      setValue(0);
+      setValue("0,00");
     }
     onClose(); // Fecha o modal após o envio
+  };
+
+  const formatCurrency = (value: string): string => {
+    const numericValue = value.replace(/\D/g, '');
+    const formattedValue = (Number(numericValue) / 100).toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return formattedValue;
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+    setValue(formatCurrency(inputValue))
   };
 
   return (
@@ -95,7 +109,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, onSubmit, variant
             fullWidth
             name='valor'
             value={value}
-            onChange={(e) => setValue(Number(e.target.value))}
+            onChange={handleChange}
           />
         )}
       </DialogContent>
