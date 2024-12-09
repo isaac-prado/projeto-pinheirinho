@@ -109,6 +109,9 @@ const App: React.FC = () => {
 
   const handleAddUser = async(data: Customer): Promise<void> => {
     await customerService.create(data);
+    customerService.getAll().then(data => {
+      setTableData(data);
+    });
     setUserModalOpen(false);
   };
 
